@@ -1,0 +1,68 @@
+{
+  "name": "Elsewhere — Curiosity Over Mindless Scrolling",
+  "short_name": "Elsewhere",
+  "description": "A calm, healthy alternative to infinite scrolling. Explore high-signal curiosities, solve mindful puzzles, and disconnect with intention.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0A0D12",
+  "theme_color": "#0A0D12",
+  "orientation": "portrait-primary",
+  "categories": ["lifestyle", "education", "health", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Discovery",
+      "short_name": "Discover",
+      "description": "Find something high-signal to replace mindless scrolling",
+      "url": "/?action=find-something",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mindful Puzzles",
+      "short_name": "Puzzles",
+      "description": "Engage your mind with logic, riddles, and code challenges",
+      "url": "/challenges",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "World Pulse",
+      "short_name": "News",
+      "description": "Important global events without doomscrolling",
+      "url": "/world-pulse",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Offline Bridge",
+      "short_name": "Offline",
+      "description": "Sensory exercises and screen-free activities",
+      "url": "/do-something",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
