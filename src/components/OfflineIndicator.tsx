@@ -8,7 +8,6 @@ export default function OfflineIndicator() {
   const [showReconnected, setShowReconnected] = useState(false);
 
   useEffect(() => {
-    // Initial check
     if (typeof navigator !== 'undefined') {
       setIsOffline(!navigator.onLine);
     }
@@ -42,17 +41,17 @@ export default function OfflineIndicator() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none px-4 w-full max-w-md animate-in slide-in-from-top-3 duration-200"
+      className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none px-4 w-full max-w-md animate-gentle-enter"
     >
       {isOffline ? (
-        <div className="flex items-center justify-center gap-2 py-2 px-3.5 rounded-full bg-amber-950/90 text-amber-200 border border-amber-500/30 text-xs font-medium shadow-xl backdrop-blur-md">
-          <WifiOff className="h-3.5 w-3.5 text-amber-400 shrink-0" />
-          <span>Offline Mode • Stored curiosities & puzzles available</span>
+        <div className="flex items-center justify-center gap-2 py-2 px-4 rounded-full bg-[#ECEBE4] text-[#5B4D34] border border-[#C5B99F] text-xs font-medium shadow-sm">
+          <WifiOff className="h-3.5 w-3.5 text-[#8C7A56] shrink-0" />
+          <span>Offline mode — saved readings and puzzles remain available</span>
         </div>
       ) : showReconnected ? (
-        <div className="flex items-center justify-center gap-2 py-2 px-3.5 rounded-full bg-emerald-950/90 text-emerald-200 border border-emerald-500/30 text-xs font-medium shadow-xl backdrop-blur-md animate-in fade-in duration-200">
-          <Wifi className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-          <span>Back Online • Live World Pulse dispatches ready</span>
+        <div className="flex items-center justify-center gap-2 py-2 px-4 rounded-full bg-[#ECEBE4] text-[#4B5846] border border-[#71816B]/40 text-xs font-medium shadow-sm">
+          <Wifi className="h-3.5 w-3.5 text-[#71816B] shrink-0" />
+          <span>Back online — live World Pulse dispatches ready</span>
         </div>
       ) : null}
     </div>

@@ -20,7 +20,7 @@ import {
   Compass,
   SlidersHorizontal,
   CheckCircle,
-  HeartHandshake
+  HeartHandshake,
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -39,7 +39,6 @@ export default function ProfilePage() {
   const [isEditingName, setIsEditingName] = useState(false);
   const [tempName, setTempName] = useState(profile.name);
 
-  // Saved items list
   const savedDiscoveries = CONTENT_ITEMS.filter((item) =>
     profile.savedItemIds.includes(item.id)
   );
@@ -76,25 +75,41 @@ export default function ProfilePage() {
   const getWorthwhileBadge = (rating?: string) => {
     switch (rating) {
       case 'very':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">🌟 Very worthwhile</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#71816B]/12 text-[#4D5A48] border border-[#71816B]/25">
+            Very worthwhile
+          </span>
+        );
       case 'somewhat':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/15 text-blue-300 border border-blue-500/30">👍 Somewhat worthwhile</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#647678]/12 text-[#475658] border border-[#647678]/25">
+            Somewhat worthwhile
+          </span>
+        );
       case 'neutral':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-neutral-500/15 text-neutral-300 border border-neutral-500/30">😐 Neutral</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#ECEBE4] text-[#5B6057] border border-[#E2E0D8]">
+            Neutral
+          </span>
+        );
       case 'distracted':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">📱 Got distracted</span>;
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#C5B99F]/30 text-[#5B4D34] border border-[#C5B99F]">
+            Got distracted
+          </span>
+        );
       default:
         return null;
     }
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 space-y-7">
-      {/* Header Profile Card */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#141926] to-[#0E121B] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#D2F827]/15 border border-[#D2F827]/30 text-[#D2F827]">
-            <User className="h-7 w-7" />
+    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10 space-y-8">
+      {/* Header */}
+      <div className="p-6 rounded-2xl bg-[#ECEBE4]/75 border border-[#E2E0D8] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] text-[#71816B]">
+            <User className="h-6 w-6" />
           </div>
 
           <div className="space-y-1">
@@ -104,183 +119,155 @@ export default function ProfilePage() {
                   type="text"
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
-                  className="px-2 py-1 rounded-lg bg-black/40 border border-white/20 text-white text-base font-bold"
+                  className="px-2.5 py-1 rounded-lg bg-[#FAF9F5] border border-[#CFCBC0] text-[#292D29] text-base font-medium"
                   autoFocus
                 />
                 <button
+                  type="button"
                   onClick={handleSaveName}
-                  className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#D2F827] text-black"
+                  className="px-3 py-1 rounded-lg text-xs font-medium bg-[#71816B] text-[#FAF9F5] cursor-pointer"
                 >
                   Save
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              <div className="flex items-center gap-2.5">
+                <h1 className="font-editorial text-2xl font-medium tracking-tight text-[#292D29]">
                   {profile.name}
                 </h1>
                 <button
+                  type="button"
                   onClick={() => setIsEditingName(true)}
-                  className="text-xs text-neutral-400 hover:text-white underline"
+                  className="text-xs text-[#777B72] hover:text-[#292D29] underline cursor-pointer"
                 >
                   Edit
                 </button>
               </div>
             )}
-            <p className="text-xs text-neutral-400 font-light">
-              Intentional explorer • Zero guilt metrics
+            <p className="text-xs text-[#5B6057]">
+              Personal notebook · No streaks or guilt metrics
             </p>
           </div>
         </div>
 
-        {/* Quick action buttons */}
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={handleExportData}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 text-neutral-300 hover:text-white hover:bg-white/5 transition-colors"
+            className="min-h-[40px] flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium border border-[#E2E0D8] bg-[#FAF9F5] text-[#292D29] hover:border-[#71816B] transition-colors cursor-pointer"
           >
-            <Download className="h-3.5 w-3.5" />
+            <Download className="h-3.5 w-3.5 text-[#71816B]" />
             <span>Export Notes</span>
           </button>
 
           <button
+            type="button"
             onClick={() => updateProfile({ soundEnabled: !profile.soundEnabled })}
-            className={`p-2 rounded-xl border transition-colors ${
+            className={`min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border transition-colors cursor-pointer ${
               profile.soundEnabled
-                ? 'border-[#D2F827]/30 text-[#D2F827] bg-[#D2F827]/5'
-                : 'border-white/10 text-neutral-500 hover:text-white'
+                ? 'border-[#71816B] text-[#4D5A48] bg-[#71816B]/10'
+                : 'border-[#E2E0D8] bg-[#FAF9F5] text-[#777B72] hover:text-[#292D29]'
             }`}
             title={profile.soundEnabled ? 'Chime sound enabled' : 'Chime muted'}
+            aria-label={profile.soundEnabled ? 'Mute gentle chimes' : 'Enable gentle chimes'}
           >
-            {profile.soundEnabled ? (
-              <Volume2 className="h-4 w-4" />
-            ) : (
-              <VolumeX className="h-4 w-4" />
-            )}
+            {profile.soundEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
-      {/* Mindful Metrics Dashboard */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-1">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400 flex items-center gap-1">
-            <Clock className="h-3 w-3 text-[#D2F827]" />
+      {/* Subtle Summary Strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 border border-[#E2E0D8] rounded-2xl bg-[#FAF9F5] divide-y sm:divide-y-0 sm:divide-x divide-[#E2E0D8] overflow-hidden">
+        <div className="p-4 space-y-1">
+          <span className="text-[11px] font-medium text-[#777B72] flex items-center gap-1.5">
+            <Clock className="h-3.5 w-3.5 text-[#71816B]" />
             Mindful Time
           </span>
-          <div className="text-xl font-bold text-white font-mono">
+          <div className="text-xl font-medium text-[#292D29] font-mono tabular-nums">
             {profile.totalMindfulMinutes}m
           </div>
-          <span className="text-[11px] text-neutral-400">Total intentional time</span>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-1">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400 flex items-center gap-1">
-            <Sparkles className="h-3 w-3 text-purple-400" />
+        <div className="p-4 space-y-1">
+          <span className="text-[11px] font-medium text-[#777B72] flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-[#71816B]" />
             Curiosities
           </span>
-          <div className="text-xl font-bold text-white font-mono">
+          <div className="text-xl font-medium text-[#292D29] font-mono tabular-nums">
             {profile.likedItemIds.length + profile.savedItemIds.length}
           </div>
-          <span className="text-[11px] text-neutral-400">Explored & saved</span>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-1">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400 flex items-center gap-1">
-            <Trophy className="h-3 w-3 text-amber-400" />
+        <div className="p-4 space-y-1">
+          <span className="text-[11px] font-medium text-[#777B72] flex items-center gap-1.5">
+            <Trophy className="h-3.5 w-3.5 text-[#8C7A56]" />
             Challenges
           </span>
-          <div className="text-xl font-bold text-white font-mono">
+          <div className="text-xl font-medium text-[#292D29] font-mono tabular-nums">
             {profile.completedChallengeIds.length} / {CHALLENGE_ITEMS.length}
           </div>
-          <span className="text-[11px] text-neutral-400">Puzzles solved</span>
         </div>
 
-        <div className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-1">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400 flex items-center gap-1">
-            <History className="h-3 w-3 text-emerald-400" />
+        <div className="p-4 space-y-1">
+          <span className="text-[11px] font-medium text-[#777B72] flex items-center gap-1.5">
+            <History className="h-3.5 w-3.5 text-[#71816B]" />
             Sessions
           </span>
-          <div className="text-xl font-bold text-white font-mono">
+          <div className="text-xl font-medium text-[#292D29] font-mono tabular-nums">
             {profile.sessionHistory.length}
           </div>
-          <span className="text-[11px] text-neutral-400">Recorded sessions</span>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-white/10 gap-4 sm:gap-6 text-xs sm:text-sm font-medium overflow-x-auto scrollbar-none">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`pb-2.5 transition-colors whitespace-nowrap ${
-            activeTab === 'overview'
-              ? 'border-b-2 border-[#D2F827] text-[#D2F827] font-semibold'
-              : 'text-neutral-400 hover:text-white'
-          }`}
-        >
-          Curiosity Interests
-        </button>
-
-        <button
-          onClick={() => setActiveTab('history')}
-          className={`pb-2.5 transition-colors flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'history'
-              ? 'border-b-2 border-[#D2F827] text-[#D2F827] font-semibold'
-              : 'text-neutral-400 hover:text-white'
-          }`}
-        >
-          <span>Personal History</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-neutral-300">
-            {profile.sessionHistory.length + profile.completedActivities.length}
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('saved')}
-          className={`pb-2.5 transition-colors flex items-center gap-1.5 whitespace-nowrap ${
-            activeTab === 'saved'
-              ? 'border-b-2 border-[#D2F827] text-[#D2F827] font-semibold'
-              : 'text-neutral-400 hover:text-white'
-          }`}
-        >
-          <span>Saved Bookmarks</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-neutral-300">
-            {savedDiscoveries.length}
-          </span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('preferences')}
-          className={`pb-2.5 transition-colors whitespace-nowrap ${
-            activeTab === 'preferences'
-              ? 'border-b-2 border-[#D2F827] text-[#D2F827] font-semibold'
-              : 'text-neutral-400 hover:text-white'
-          }`}
-        >
-          Session Goals & Cloud
-        </button>
+      <div className="flex border-b border-[#E2E0D8] gap-6 text-xs sm:text-sm font-medium overflow-x-auto scrollbar-none">
+        {(
+          [
+            { id: 'overview', label: 'Curiosity Interests' },
+            {
+              id: 'history',
+              label: `Personal History (${profile.sessionHistory.length + profile.completedActivities.length})`,
+            },
+            { id: 'saved', label: `Saved (${savedDiscoveries.length})` },
+            { id: 'preferences', label: 'Session Goals & Sync' },
+          ] as const
+        ).map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`pb-3 transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === tab.id
+                ? 'border-b-2 border-[#71816B] text-[#292D29] font-semibold'
+                : 'text-[#777B72] hover:text-[#292D29]'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* Tab 1: Curiosity Interests */}
+      {/* Tab 1: Interests */}
       {activeTab === 'overview' && (
         <section className="space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-1">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <Compass className="h-4 w-4 text-[#D2F827]" />
-                Selected Disciplines of Curiosity
+              <h2 className="font-editorial text-xl font-medium text-[#292D29] flex items-center gap-2">
+                <Compass className="h-4 w-4 text-[#71816B]" />
+                <span>Selected Disciplines</span>
               </h2>
-              <p className="text-xs text-neutral-400 font-light">
-                Toggle the fields you want the transparent recommendation engine to prioritize.
+              <p className="text-xs text-[#5B6057]">
+                Choose the subjects Elsewhere prioritizes in your Discover feed.
               </p>
             </div>
 
             <button
+              type="button"
               onClick={openOnboardingModal}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/10 text-white hover:bg-white/15 transition-all self-start sm:self-auto"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium bg-[#ECEBE4] text-[#292D29] hover:bg-[#E2E0D8] transition-colors self-start sm:self-auto cursor-pointer"
             >
-              <SlidersHorizontal className="h-3.5 w-3.5 text-[#D2F827]" />
-              <span>Customize Onboarding</span>
+              <SlidersHorizontal className="h-3.5 w-3.5 text-[#71816B]" />
+              <span>Run Setup Guide</span>
             </button>
           </div>
 
@@ -290,11 +277,12 @@ export default function ProfilePage() {
               return (
                 <button
                   key={topic}
+                  type="button"
                   onClick={() => toggleInterest(topic)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-medium border transition-all ${
+                  className={`px-3.5 py-2 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
                     isSelected
-                      ? 'bg-[#D2F827] text-black border-[#D2F827] font-semibold shadow-sm'
-                      : 'bg-white/[0.02] text-neutral-400 border-white/10 hover:border-white/20'
+                      ? 'bg-[#71816B] text-[#FAF9F5] border-[#71816B]'
+                      : 'bg-[#FAF9F5] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B]'
                   }`}
                 >
                   {isSelected ? `✓ ${topic}` : `+ ${topic}`}
@@ -305,69 +293,69 @@ export default function ProfilePage() {
         </section>
       )}
 
-      {/* Tab 2: Personal History of Completed Activities & Sessions */}
+      {/* Tab 2: Personal History */}
       {activeTab === 'history' && (
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <HeartHandshake className="h-4 w-4 text-[#D2F827]" />
-                Personal Activity & Session Journal
+              <h2 className="font-editorial text-xl font-medium text-[#292D29] flex items-center gap-2">
+                <HeartHandshake className="h-4 w-4 text-[#71816B]" />
+                <span>Session &amp; Activity Journal</span>
               </h2>
-              <p className="text-xs text-neutral-400 font-light">
-                Your authentic record of mindful exploration and worthwhile reflections.
+              <p className="text-xs text-[#5B6057]">
+                Your record of mindful readings, reflections, and offline breaks.
               </p>
             </div>
 
             {(profile.sessionHistory.length > 0 || profile.completedActivities.length > 0) && (
               <button
+                type="button"
                 onClick={handleClearHistory}
-                className="text-xs text-neutral-400 hover:text-rose-400 transition-colors"
+                className="text-xs text-[#777B72] hover:text-[#292D29] underline cursor-pointer"
               >
                 Clear History
               </button>
             )}
           </div>
 
-          {/* Recorded Sessions Section */}
           <div className="space-y-3">
-            <span className="text-[11px] uppercase tracking-wider text-neutral-400 font-bold block">
+            <span className="text-xs uppercase tracking-wider text-[#777B72] font-medium block">
               Completed Sessions ({profile.sessionHistory.length})
             </span>
 
             {profile.sessionHistory.length === 0 ? (
-              <div className="p-6 text-center rounded-2xl bg-[#121620] border border-white/10 text-xs text-neutral-400 font-light">
-                No session reflections recorded yet. Complete your first session to see it here!
+              <div className="p-6 text-center rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] text-xs text-[#777B72]">
+                No session reflections recorded yet.
               </div>
             ) : (
               <div className="space-y-2.5">
                 {profile.sessionHistory.map((sess) => (
                   <div
                     key={sess.id}
-                    className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-2"
+                    className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] space-y-2"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-[#D2F827]" />
-                        <span className="text-xs font-bold text-white">
+                        <Clock className="h-4 w-4 text-[#71816B]" />
+                        <span className="text-xs font-semibold text-[#292D29]">
                           {sess.durationMinutes} min Mindful Session
                         </span>
-                        <span className="text-[11px] text-neutral-400">
-                          (Target: {sess.targetDurationMinutes}m • {sess.cardsViewed} curiosities)
+                        <span className="text-[11px] text-[#777B72]">
+                          (Target {sess.targetDurationMinutes}m · {sess.cardsViewed} explored)
                         </span>
                       </div>
 
                       <div className="flex items-center gap-2">
                         {getWorthwhileBadge(sess.worthwhileRating)}
-                        <span className="text-[10px] text-neutral-500">
+                        <span className="text-[11px] text-[#777B72] font-mono">
                           {new Date(sess.endedAt).toLocaleDateString()}
                         </span>
                       </div>
                     </div>
 
                     {sess.reflectionNote && (
-                      <p className="text-xs text-neutral-300 font-light pl-6 italic border-l-2 border-[#D2F827]/40 py-0.5">
-                        &quot;{sess.reflectionNote}&quot;
+                      <p className="font-editorial text-sm text-[#5B6057] pl-4 italic border-l-2 border-[#71816B]">
+                        &ldquo;{sess.reflectionNote}&rdquo;
                       </p>
                     )}
                   </div>
@@ -376,14 +364,13 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* Completed Activities Section */}
           <div className="space-y-3 pt-2">
-            <span className="text-[11px] uppercase tracking-wider text-neutral-400 font-bold block">
-              Completed Activities & Resets ({profile.completedActivities.length})
+            <span className="text-xs uppercase tracking-wider text-[#777B72] font-medium block">
+              Completed Activities &amp; Resets ({profile.completedActivities.length})
             </span>
 
             {profile.completedActivities.length === 0 ? (
-              <div className="p-6 text-center rounded-2xl bg-[#121620] border border-white/10 text-xs text-neutral-400 font-light">
+              <div className="p-6 text-center rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] text-xs text-[#777B72]">
                 No individual activities logged yet.
               </div>
             ) : (
@@ -391,30 +378,30 @@ export default function ProfilePage() {
                 {profile.completedActivities.map((act) => (
                   <div
                     key={act.id}
-                    className="p-3.5 rounded-xl bg-[#121620] border border-white/10 flex items-center justify-between gap-3"
+                    className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] flex items-center justify-between gap-3"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
-                        <span className="text-xs font-bold text-white">{act.title}</span>
+                        <CheckCircle className="h-3.5 w-3.5 text-[#71816B]" />
+                        <span className="text-xs font-medium text-[#292D29]">{act.title}</span>
                         {act.category && (
-                          <span className="text-[10px] uppercase font-bold text-neutral-500 px-1.5 py-0.2 rounded bg-white/5">
+                          <span className="text-[10px] uppercase text-[#777B72] px-2 py-0.5 rounded bg-[#ECEBE4]">
                             {act.category}
                           </span>
                         )}
                       </div>
                       {act.notes && (
-                        <p className="text-xs text-neutral-400 font-light pl-5">
-                          &quot;{act.notes}&quot;
+                        <p className="font-editorial text-xs text-[#5B6057] pl-5 italic">
+                          &ldquo;{act.notes}&rdquo;
                         </p>
                       )}
                     </div>
 
                     <div className="text-right shrink-0">
-                      <span className="text-xs font-mono font-medium text-white block">
+                      <span className="text-xs font-mono font-medium text-[#292D29] block">
                         {act.durationMinutes}m
                       </span>
-                      <span className="text-[10px] text-neutral-500">
+                      <span className="text-[11px] text-[#777B72] font-mono">
                         {new Date(act.completedAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -430,11 +417,11 @@ export default function ProfilePage() {
       {activeTab === 'saved' && (
         <section className="space-y-3">
           {savedDiscoveries.length === 0 ? (
-            <div className="p-8 text-center rounded-2xl bg-[#121620] border border-white/10 space-y-2">
-              <Bookmark className="h-6 w-6 text-neutral-500 mx-auto" />
-              <p className="text-sm text-neutral-300">No saved bookmarks yet.</p>
-              <p className="text-xs text-neutral-500">
-                Tap the Bookmark icon on any card in Discover, Challenges, or Explore to save it here.
+            <div className="p-8 text-center rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] space-y-2">
+              <Bookmark className="h-6 w-6 text-[#777B72] mx-auto" />
+              <p className="text-sm text-[#292D29]">No saved bookmarks yet.</p>
+              <p className="text-xs text-[#777B72]">
+                Tap Bookmark on any reading or challenge to keep it here.
               </p>
             </div>
           ) : (
@@ -442,35 +429,35 @@ export default function ProfilePage() {
               {savedDiscoveries.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-xl bg-[#121620] border border-white/10 hover:border-white/20 transition-all flex items-center justify-between gap-3"
+                  className="p-4 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] hover:border-[#CFCBC0] transition-colors flex items-center justify-between gap-3"
                 >
                   <div
                     onClick={() => openArticleModal(item)}
                     className="cursor-pointer space-y-1 flex-1"
                   >
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#D2F827]">
-                      {item.topic}
-                    </span>
-                    <h3 className="text-sm font-bold text-white hover:text-[#D2F827] transition-colors leading-snug">
+                    <span className="text-[11px] font-medium text-[#71816B]">{item.topic}</span>
+                    <h3 className="font-editorial text-base font-medium text-[#292D29] hover:text-[#5E6D59] transition-colors leading-snug">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-neutral-400 line-clamp-1 font-light">
-                      {item.summary}
-                    </p>
+                    <p className="text-xs text-[#777B72] line-clamp-1">{item.summary}</p>
                   </div>
 
                   <div className="flex items-center gap-1 shrink-0">
                     <button
+                      type="button"
                       onClick={() => openArticleModal(item)}
-                      className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-colors"
+                      className="p-2 rounded-lg bg-[#ECEBE4] hover:bg-[#E2E0D8] text-[#292D29] transition-colors cursor-pointer"
                       title="Read"
+                      aria-label={`Read ${item.title}`}
                     >
                       <BookOpen className="h-4 w-4" />
                     </button>
                     <button
+                      type="button"
                       onClick={() => toggleSave(item.id)}
-                      className="p-2 rounded-lg hover:bg-rose-500/10 text-neutral-400 hover:text-rose-400 transition-colors"
+                      className="p-2 rounded-lg hover:bg-[#ECEBE4] text-[#777B72] hover:text-[#292D29] transition-colors cursor-pointer"
                       title="Remove bookmark"
+                      aria-label={`Remove ${item.title} from bookmarks`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -482,28 +469,28 @@ export default function ProfilePage() {
         </section>
       )}
 
-      {/* Tab 4: Session Goals & Supabase Cloud */}
+      {/* Tab 4: Preferences & Cloud */}
       {activeTab === 'preferences' && (
-        <section className="space-y-6">
-          {/* Target Session Duration */}
-          <div className="p-5 rounded-2xl bg-[#121620] border border-white/10 space-y-3">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Clock className="h-4 w-4 text-[#D2F827]" />
-              Selectable Session Duration
+        <section className="space-y-5">
+          <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] space-y-3">
+            <h3 className="text-sm font-semibold text-[#292D29] flex items-center gap-2">
+              <Clock className="h-4 w-4 text-[#71816B]" />
+              Session Duration Limit
             </h3>
-            <p className="text-xs text-neutral-400 font-light">
-              Choose how long each mindful exploration session lasts before Elsewhere gently suggests pausing.
+            <p className="text-xs text-[#5B6057]">
+              Choose how long each session lasts before Elsewhere gently invites you to pause.
             </p>
 
             <div className="flex gap-2 flex-wrap">
               {[5, 10, 15, 20, 30].map((mins) => (
                 <button
                   key={mins}
+                  type="button"
                   onClick={() => setSessionTargetDuration(mins)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs font-medium border transition-colors cursor-pointer ${
                     profile.sessionTargetDurationMinutes === mins
-                      ? 'bg-[#D2F827] text-black border-[#D2F827] font-semibold'
-                      : 'bg-white/[0.02] text-neutral-400 border-white/10 hover:border-white/20'
+                      ? 'bg-[#71816B] text-[#FAF9F5] border-[#71816B]'
+                      : 'bg-[#F6F5F0] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B]'
                   }`}
                 >
                   {mins} min
@@ -512,25 +499,25 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Daily Intention */}
-          <div className="p-5 rounded-2xl bg-[#121620] border border-white/10 space-y-3">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-purple-400" />
-              Optional Daily Usage Goal
+          <div className="p-5 rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] space-y-3">
+            <h3 className="text-sm font-semibold text-[#292D29] flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#8C7A56]" />
+              Daily Intention
             </h3>
-            <p className="text-xs text-neutral-400 font-light">
-              Set an intentional ceiling for daily screen time. Zero streaks, zero guilt.
+            <p className="text-xs text-[#5B6057]">
+              Set a calm daily ceiling for screen-based curiosity. Zero streaks, zero guilt.
             </p>
 
             <div className="flex gap-2 flex-wrap">
               {[15, 30, 45, 60].map((mins) => (
                 <button
                   key={mins}
+                  type="button"
                   onClick={() => updateProfile({ dailySessionGoalMinutes: mins })}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                  className={`px-4 py-2 rounded-xl text-xs font-medium border transition-colors cursor-pointer ${
                     profile.dailySessionGoalMinutes === mins
-                      ? 'bg-purple-500 text-white border-purple-500 font-semibold'
-                      : 'bg-white/[0.02] text-neutral-400 border-white/10 hover:border-white/20'
+                      ? 'bg-[#292D29] text-[#FAF9F5] border-[#292D29]'
+                      : 'bg-[#F6F5F0] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B]'
                   }`}
                 >
                   {mins} min
@@ -539,21 +526,24 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Supabase Integration readiness */}
-          <div className="p-5 rounded-2xl bg-[#121620] border border-white/10 space-y-3">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Database className="h-4 w-4 text-emerald-400" />
-              Supabase Backend Persistence
+          <div className="p-5 rounded-2xl bg-[#ECEBE4]/65 border border-[#E2E0D8] space-y-3">
+            <h3 className="text-sm font-semibold text-[#292D29] flex items-center gap-2">
+              <Database className="h-4 w-4 text-[#71816B]" />
+              Optional Supabase Persistence
             </h3>
-            <p className="text-xs text-neutral-400 font-light leading-relaxed">
-              Elsewhere operates fully offline with localStorage. To enable multi-device sync
-              with PostgreSQL, provide your Supabase environment variables in{' '}
-              <code className="text-[#D2F827] bg-black/40 px-1 py-0.5 rounded">.env.local</code>.
-              The complete schema with RLS policies is ready in{' '}
-              <code className="text-[#D2F827] bg-black/40 px-1 py-0.5 rounded">supabase/schema.sql</code>.
+            <p className="text-xs text-[#5B6057] leading-relaxed">
+              Elsewhere works offline using browser storage. For multi-device PostgreSQL sync, configure your Supabase variables in{' '}
+              <code className="text-[#292D29] bg-[#FAF9F5] px-1.5 py-0.5 rounded border border-[#E2E0D8]">
+                .env.local
+              </code>
+              . The schema with RLS policies is located at{' '}
+              <code className="text-[#292D29] bg-[#FAF9F5] px-1.5 py-0.5 rounded border border-[#E2E0D8]">
+                supabase/schema.sql
+              </code>
+              .
             </p>
 
-            <div className="p-3 rounded-xl bg-black/40 border border-white/5 font-mono text-[11px] text-neutral-400 space-y-1">
+            <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] font-mono text-[11px] text-[#5B6057] space-y-1">
               <div>NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co</div>
               <div>NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1...</div>
             </div>

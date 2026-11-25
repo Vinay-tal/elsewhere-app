@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
-import { ContentItem, Topic } from '@/types';
+import { ContentItem } from '@/types';
 import { useApp } from '@/context/AppContext';
-import { Clock, Heart, Bookmark, EyeOff, Sparkles, BookOpen, Quote } from 'lucide-react';
+import { Clock, Heart, Bookmark, EyeOff, BookOpen } from 'lucide-react';
+import { getTopicTone } from '@/lib/natureTheme';
+import { BotanicalMotif } from '@/components/ActivityArtwork';
 
 interface FeaturedHeroCardProps {
   item: ContentItem;
@@ -14,118 +16,97 @@ export default function FeaturedHeroCard({ item }: FeaturedHeroCardProps) {
 
   const isLiked = profile.likedItemIds.includes(item.id);
   const isSaved = profile.savedItemIds.includes(item.id);
-
-  const getTopicColor = (topic: Topic) => {
-    switch (topic) {
-      case 'Psychology':
-      case 'Philosophy':
-        return 'text-purple-300 bg-purple-500/10 border-purple-500/30';
-      case 'Science':
-      case 'Nature & Space':
-        return 'text-[#D2F827] bg-[#D2F827]/10 border-[#D2F827]/30';
-      case 'Technology & AI':
-      case 'Programming':
-        return 'text-cyan-300 bg-cyan-500/10 border-cyan-500/30';
-      default:
-        return 'text-amber-300 bg-amber-500/10 border-amber-500/30';
-    }
-  };
+  const tone = getTopicTone(item.topic);
 
   return (
-    <article className="group relative rounded-3xl border border-[#D2F827]/30 bg-gradient-to-b from-[#141A29] via-[#101420] to-[#0D1018] shadow-2xl overflow-hidden transition-all duration-300 hover:border-[#D2F827]/50">
-      {/* Subtle glowing ambient gradient behind card */}
-      <div className="absolute -top-24 -right-24 h-48 w-48 rounded-full bg-[#D2F827]/10 blur-3xl pointer-events-none" />
-
-      <div className="p-6 sm:p-8 space-y-4 relative z-10">
-        {/* Top Badges Row */}
-        <div className="flex items-center justify-between gap-2">
+    <article className="group relative rounded-2xl border border-[#E2E0D8] bg-[#ECEBE4]/75 transition-colors duration-200 hover:border-[#CFCBC0] overflow-hidden">
+      <div className="p-6 sm:p-8 space-y-5">
+        {/* Top Meta & Dismiss */}
+        <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider bg-[#D2F827] text-black">
-              Featured Discovery
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#71816B] text-[#FAF9F5]">
+              Featured Reading
             </span>
-            <span
-              className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${getTopicColor(
-                item.topic
-              )}`}
-            >
+            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${tone.badge}`}>
               {item.topic}
             </span>
-            <span className="flex items-center gap-1 text-xs text-neutral-400 font-mono">
+            <span className="inline-flex items-center gap-1 text-xs text-[#777B72] font-mono tabular-nums">
               <Clock className="h-3 w-3" />
               {item.readTimeMinutes} min read
             </span>
           </div>
 
-          <button
-            onClick={() => dismissItem(item.id)}
-            className="p-1 rounded-md text-neutral-500 hover:text-neutral-300 hover:bg-white/5 transition-colors"
-            title="Dismiss from feed"
-          >
-            <EyeOff className="h-3.5 w-3.5" />
-          </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <BotanicalMotif className="hidden sm:block h-12 w-12 opacity-90" />
+            <button
+              type="button"
+              onClick={() => dismissItem(item.id)}
+              className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg text-[#777B72] hover:text-[#292D29] hover:bg-[#E2E0D8]/60 transition-colors cursor-pointer"
+              title="Dismiss from feed"
+              aria-label="Dismiss from feed"
+            >
+              <EyeOff className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        {/* Headline & Subtitle */}
+        {/* Title & Excerpt */}
         <div
+          role="button"
+          tabIndex={0}
           onClick={() => openArticleModal(item)}
-          className="cursor-pointer space-y-2"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openArticleModal(item);
+            }
+          }}
+          className="cursor-pointer space-y-2.5 max-w-2xl"
         >
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white group-hover:text-[#D2F827] transition-colors leading-tight">
+          <h3 className="font-editorial text-2xl sm:text-3xl font-medium tracking-tight text-[#292D29] group-hover:text-[#4D5A48] transition-colors leading-snug">
             {item.title}
-          </h2>
-          <p className="text-sm sm:text-base text-neutral-300 font-light leading-relaxed">
+          </h3>
+          <p className="text-sm sm:text-base text-[#5B6057] leading-relaxed">
             {item.subtitle}
+          </p>
+          <p className="text-xs sm:text-sm text-[#777B72] line-clamp-2 leading-relaxed">
+            {item.summary}
           </p>
         </div>
 
-        {/* Essence Excerpt */}
-        <p
-          onClick={() => openArticleModal(item)}
-          className="text-xs sm:text-sm text-neutral-400 line-clamp-2 leading-relaxed cursor-pointer font-light"
-        >
-          {item.summary}
-        </p>
-
-        {/* Key Takeaway Chip */}
+        {/* Takeaway Note */}
         {item.takeaways && item.takeaways.length > 0 && (
           <div
             onClick={() => openArticleModal(item)}
-            className="p-3.5 rounded-xl bg-white/[0.03] border border-white/5 cursor-pointer flex items-start gap-2.5 text-xs text-neutral-300"
+            className={`p-4 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] border-l-2 ${tone.accentBorder} cursor-pointer text-xs sm:text-sm text-[#5B6057] leading-relaxed`}
           >
-            <Quote className="h-4 w-4 text-[#D2F827] shrink-0 mt-0.5" />
-            <span className="italic font-light">
-              &quot;{item.takeaways[0]}&quot;
-            </span>
+            <span className="font-editorial italic">&ldquo;{item.takeaways[0]}&rdquo;</span>
           </div>
         )}
 
-        {/* Transparent Recommendation Reason */}
         {item.recommendedReason && (
-          <div className="flex items-center gap-1.5 text-xs text-neutral-400 pt-1">
-            <Sparkles className="h-3.5 w-3.5 text-[#D2F827] shrink-0" />
-            <span>{item.recommendedReason}</span>
-          </div>
+          <p className="text-xs text-[#777B72]">{item.recommendedReason}</p>
         )}
       </div>
 
-      {/* Action Footer */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-white/[0.08] bg-[#0A0D14]/80">
-        <div className="flex items-center gap-2">
+      {/* Quiet Footer Actions */}
+      <div className="flex items-center justify-between px-6 py-3.5 border-t border-[#E2E0D8] bg-[#FAF9F5]">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
               toggleLike(item.id);
             }}
-            className={`min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all active:scale-95 cursor-pointer touch-manipulation ${
+            className={`min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer touch-manipulation ${
               isLiked
-                ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20'
-                : 'text-neutral-400 hover:text-white hover:bg-white/5 border border-white/5'
+                ? 'text-[#715241] bg-[#A67F68]/12 border border-[#A67F68]/30'
+                : 'text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4]/70 border border-transparent'
             }`}
             title="Like this idea"
             aria-label="Like this idea"
           >
-            <Heart className={`h-4 w-4 ${isLiked ? 'fill-rose-400' : ''}`} />
+            <Heart className={`h-4 w-4 ${isLiked ? 'fill-[#A67F68] text-[#A67F68]' : ''}`} />
             <span>{isLiked ? 'Liked' : 'Like'}</span>
           </button>
 
@@ -135,15 +116,15 @@ export default function FeaturedHeroCard({ item }: FeaturedHeroCardProps) {
               e.stopPropagation();
               toggleSave(item.id);
             }}
-            className={`min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-all active:scale-95 cursor-pointer touch-manipulation ${
+            className={`min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer touch-manipulation ${
               isSaved
-                ? 'text-[#D2F827] bg-[#D2F827]/10 border border-[#D2F827]/30'
-                : 'text-neutral-400 hover:text-white hover:bg-white/5 border border-white/5'
+                ? 'text-[#4D5A48] bg-[#71816B]/12 border border-[#71816B]/30'
+                : 'text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4]/70 border border-transparent'
             }`}
             title="Save bookmark"
             aria-label="Save bookmark"
           >
-            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-[#D2F827]' : ''}`} />
+            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-[#71816B] text-[#71816B]' : ''}`} />
             <span>{isSaved ? 'Saved' : 'Save'}</span>
           </button>
         </div>
@@ -154,7 +135,7 @@ export default function FeaturedHeroCard({ item }: FeaturedHeroCardProps) {
             e.stopPropagation();
             openArticleModal(item);
           }}
-          className="min-h-[44px] flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#D2F827] text-black hover:bg-[#BDF010] active:scale-95 shadow-md transition-all cursor-pointer touch-manipulation"
+          className="min-h-[44px] flex items-center gap-2 px-5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors cursor-pointer touch-manipulation"
           aria-label={`Read Story: ${item.title}`}
         >
           <BookOpen className="h-4 w-4" />

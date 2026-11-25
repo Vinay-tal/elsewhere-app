@@ -69,8 +69,8 @@ function runMobilePwaTests() {
   assert(manifest.short_name === 'Elsewhere', 'Manifest has concise short_name');
   assert(manifest.display === 'standalone', 'Manifest display mode is "standalone"');
   assert(manifest.start_url === '/', 'Manifest start_url is root "/"');
-  assert(manifest.background_color === '#0A0D12', 'Manifest background_color matches dark theme');
-  assert(manifest.theme_color === '#0A0D12', 'Manifest theme_color is #0A0D12');
+  assert(manifest.background_color === '#F6F5F0', 'Manifest background_color matches warm ivory theme');
+  assert(manifest.theme_color === '#F6F5F0', 'Manifest theme_color is #F6F5F0');
   assert(Array.isArray(manifest.icons) && manifest.icons.length >= 3, 'Manifest defines required icon set');
 
   // Check required icon files on disk

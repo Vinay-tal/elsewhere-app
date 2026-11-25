@@ -24,7 +24,20 @@ export default function QuickFiveMinutesModal({
     setMode(initialMode);
   }, [initialMode, isOpen]);
 
-  // Serendipitous items pool: all bite-sized articles + quick challenges + offline activities
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   const surprisePool = [
     ...CONTENT_ITEMS.filter((c) => c.readTimeMinutes <= 3).map((item) => ({
       type: 'article' as const,
@@ -38,7 +51,7 @@ export default function QuickFiveMinutesModal({
       type: 'challenge' as const,
       data: item,
       title: item.title,
-      category: `${item.category.toUpperCase()} • ${item.topic}`,
+      category: `${item.category.toUpperCase()} · ${item.topic}`,
       time: `${item.timeEstimateMinutes} min`,
       description: item.prompt,
     })),
@@ -46,7 +59,7 @@ export default function QuickFiveMinutesModal({
       type: 'offline' as const,
       data: item,
       title: item.title,
-      category: `OFFLINE • ${item.category}`,
+      category: `OFFLINE · ${item.category}`,
       time: `${item.durationMinutes} min`,
       description: item.description,
     })),
@@ -54,213 +67,218 @@ export default function QuickFiveMinutesModal({
 
   const currentSurprise = surprisePool[surpriseIndex % surprisePool.length];
 
-  const handleNextSurprise = () => {
-    setSurpriseIndex((prev) => prev + 1);
-  };
+  const handleNextSurprise = () => setSurpriseIndex((prev) => prev + 1);
 
   const handleLaunchSurprise = () => {
     onClose();
-    if (currentSurprise.type === 'article') {
-      openArticleModal(currentSurprise.data);
-    } else if (currentSurprise.type === 'challenge') {
-      openChallengeModal(currentSurprise.data);
-    } else {
-      openOfflineTimer(currentSurprise.data);
-    }
+    if (currentSurprise.type === 'article') openArticleModal(currentSurprise.data);
+    else if (currentSurprise.type === 'challenge') openChallengeModal(currentSurprise.data);
+    else openOfflineTimer(currentSurprise.data);
   };
 
   if (!isOpen) return null;
 
-  // Curated 5-minute options
   const quickBite = CONTENT_ITEMS.find((c) => c.readTimeMinutes <= 3) || CONTENT_ITEMS[0];
   const quickChallenge = CHALLENGE_ITEMS[0];
   const quickOffline = OFFLINE_ACTIVITIES[0];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="5-minute mindful options"
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#292D29]/45 backdrop-blur-xs animate-gentle-enter"
+    >
       <div
-        className="relative flex flex-col w-full max-w-lg bg-[#111520] border border-white/15 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative flex flex-col w-full max-w-lg bg-[#FAF9F5] border border-[#E2E0D8] rounded-2xl shadow-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header Tabs */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/[0.08] bg-[#0D1018]">
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-white/[0.04] border border-white/5">
+        {/* Header */}
+        <div className="flex items-center justify-between gap-2 px-5 py-3.5 border-b border-[#E2E0D8] bg-[#F6F5F0]">
+          <div className="flex items-center gap-1 p-1 rounded-xl bg-[#ECEBE4] border border-[#E2E0D8]">
             <button
+              type="button"
               onClick={() => setMode('five-minutes')}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 mode === 'five-minutes'
-                  ? 'bg-[#D2F827] text-black shadow-sm'
-                  : 'text-neutral-400 hover:text-white'
+                  ? 'bg-[#71816B] text-[#FAF9F5]'
+                  : 'text-[#5B6057] hover:text-[#292D29]'
               }`}
             >
-              ⚡ I Have 5 Minutes
+              5-Min Options
             </button>
             <button
+              type="button"
               onClick={() => {
                 onClose();
                 openFindSomethingModal();
               }}
-              className="px-3 py-1 rounded-lg text-xs font-semibold transition-all text-neutral-400 hover:text-white hover:bg-white/5"
+              className="px-3 py-1 rounded-lg text-xs font-medium text-[#5B6057] hover:text-[#292D29] transition-colors cursor-pointer"
             >
-              🎲 Find Something for Me →
+              Guide Me →
             </button>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+            aria-label="Close modal"
+            className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Modal Body */}
         <div className="p-5 sm:p-6 space-y-4">
           {mode === 'five-minutes' ? (
             <>
               <div className="space-y-1">
-                <h3 className="text-base sm:text-lg font-bold text-white">
-                  Quick 5-Minute Micro-Sessions
+                <h3 className="font-editorial text-2xl font-medium text-[#292D29]">
+                  Quiet 5-Minute Breaks
                 </h3>
-                <p className="text-xs text-neutral-400 font-light">
-                  Perfect when you instinctively unlock your phone between meetings, on transit, or taking a breath.
+                <p className="text-xs sm:text-sm text-[#5B6057]">
+                  Three steady choices for a brief pause between tasks or on transit.
                 </p>
               </div>
 
               <div className="space-y-2.5 pt-1">
-                {/* 1. Quick Read */}
-                <div
+                <button
+                  type="button"
                   onClick={() => {
                     onClose();
                     openArticleModal(quickBite);
                   }}
-                  className="group p-3.5 rounded-xl bg-[#141926] border border-white/5 hover:border-[#D2F827]/40 cursor-pointer transition-all active:scale-[0.98] flex items-center justify-between gap-3"
+                  className="w-full text-left group p-3.5 rounded-xl bg-[#F6F5F0] border border-[#E2E0D8] hover:border-[#71816B] transition-colors flex items-center justify-between gap-3 cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ECEBE4] text-[#71816B]">
                       <BookOpen className="h-4 w-4" />
                     </div>
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-1.5 text-[10px] text-neutral-400">
-                        <span className="font-semibold text-purple-300">{quickBite.topic}</span>
-                        <span>•</span>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#777B72]">
+                        <span className="font-medium text-[#4D5A48]">{quickBite.topic}</span>
+                        <span>·</span>
                         <span>{quickBite.readTimeMinutes} min read</span>
                       </div>
-                      <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-[#D2F827] transition-colors line-clamp-1">
+                      <h4 className="text-sm font-medium text-[#292D29] truncate">
                         {quickBite.title}
                       </h4>
                     </div>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-neutral-500 group-hover:text-[#D2F827] group-hover:translate-x-0.5 transition-all shrink-0" />
-                </div>
+                  <ArrowRight className="h-4 w-4 text-[#777B72] group-hover:text-[#71816B] shrink-0" />
+                </button>
 
-                {/* 2. Quick Puzzle */}
-                <div
+                <button
+                  type="button"
                   onClick={() => {
                     onClose();
                     openChallengeModal(quickChallenge);
                   }}
-                  className="group p-3.5 rounded-xl bg-[#141926] border border-white/5 hover:border-amber-400/40 cursor-pointer transition-all active:scale-[0.98] flex items-center justify-between gap-3"
+                  className="w-full text-left group p-3.5 rounded-xl bg-[#F6F5F0] border border-[#E2E0D8] hover:border-[#71816B] transition-colors flex items-center justify-between gap-3 cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/10 text-amber-300 border border-amber-400/20">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ECEBE4] text-[#8C7A56]">
                       <Trophy className="h-4 w-4" />
                     </div>
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-1.5 text-[10px] text-neutral-400">
-                        <span className="font-semibold text-amber-300">LOGIC PUZZLE</span>
-                        <span>•</span>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#777B72]">
+                        <span className="font-medium text-[#5B4D34]">Logic Puzzle</span>
+                        <span>·</span>
                         <span>{quickChallenge.timeEstimateMinutes} min</span>
                       </div>
-                      <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-amber-300 transition-colors line-clamp-1">
+                      <h4 className="text-sm font-medium text-[#292D29] truncate">
                         {quickChallenge.title}
                       </h4>
                     </div>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-neutral-500 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </div>
+                  <ArrowRight className="h-4 w-4 text-[#777B72] group-hover:text-[#71816B] shrink-0" />
+                </button>
 
-                {/* 3. Offline Grounding */}
-                <div
+                <button
+                  type="button"
                   onClick={() => {
                     onClose();
                     openOfflineTimer(quickOffline);
                   }}
-                  className="group p-3.5 rounded-xl bg-[#141926] border border-white/5 hover:border-emerald-400/40 cursor-pointer transition-all active:scale-[0.98] flex items-center justify-between gap-3"
+                  className="w-full text-left group p-3.5 rounded-xl bg-[#F6F5F0] border border-[#E2E0D8] hover:border-[#71816B] transition-colors flex items-center justify-between gap-3 cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#ECEBE4] text-[#71816B]">
                       <Footprints className="h-4 w-4" />
                     </div>
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-1.5 text-[10px] text-neutral-400">
-                        <span className="font-semibold text-emerald-300">OFFLINE RESET</span>
-                        <span>•</span>
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="flex items-center gap-1.5 text-[11px] text-[#777B72]">
+                        <span className="font-medium text-[#4D5A48]">Offline Reset</span>
+                        <span>·</span>
                         <span>{quickOffline.durationMinutes} min</span>
                       </div>
-                      <h4 className="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-300 transition-colors line-clamp-1">
+                      <h4 className="text-sm font-medium text-[#292D29] truncate">
                         {quickOffline.title}
                       </h4>
                     </div>
                   </div>
-                  <ArrowRight className="h-4 w-4 text-neutral-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all shrink-0" />
-                </div>
+                  <ArrowRight className="h-4 w-4 text-[#777B72] group-hover:text-[#71816B] shrink-0" />
+                </button>
               </div>
             </>
           ) : (
             <>
-              {/* Serendipity Surprise Me Card */}
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-[#8B5CF6]" />
-                    Serendipitous Pick
+                  <h3 className="font-editorial text-xl font-medium text-[#292D29] flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-[#71816B]" />
+                    <span>Serendipitous Pick</span>
                   </h3>
                   <button
+                    type="button"
                     onClick={handleNextSurprise}
-                    className="flex items-center gap-1 text-xs text-[#8B5CF6] hover:text-purple-300 transition-colors"
+                    className="flex items-center gap-1 text-xs text-[#71816B] hover:text-[#292D29] cursor-pointer"
                   >
-                    <Shuffle className="h-3 w-3" />
+                    <Shuffle className="h-3.5 w-3.5" />
                     <span>Shuffle</span>
                   </button>
                 </div>
-                <p className="text-xs text-neutral-400 font-light">
-                  Hand-picked outside your comfort zone to broaden your mental horizons.
+                <p className="text-xs text-[#5B6057]">
+                  A calm discovery outside your usual selections.
                 </p>
               </div>
 
-              <div className="p-4 sm:p-5 rounded-2xl bg-[#151A27] border border-[#8B5CF6]/30 shadow-lg space-y-3">
+              <div className="p-5 rounded-2xl bg-[#F6F5F0] border border-[#E2E0D8] space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#8B5CF6]/15 text-purple-300 border border-[#8B5CF6]/30">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wider bg-[#ECEBE4] text-[#5B6057] border border-[#E2E0D8]">
                     {currentSurprise.category}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-neutral-400 font-mono">
+                  <span className="flex items-center gap-1 text-xs text-[#777B72] font-mono">
                     <Clock className="h-3 w-3" />
                     {currentSurprise.time}
                   </span>
                 </div>
 
-                <h4 className="text-base font-bold text-white leading-snug">
+                <h4 className="font-editorial text-lg font-medium text-[#292D29] leading-snug">
                   {currentSurprise.title}
                 </h4>
 
-                <p className="text-xs text-neutral-300 font-light leading-relaxed line-clamp-3">
+                <p className="text-xs text-[#5B6057] leading-relaxed line-clamp-3">
                   {currentSurprise.description}
                 </p>
 
                 <div className="pt-2 flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={handleLaunchSurprise}
-                    className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#D2F827] text-black hover:bg-[#BDF010] active:scale-95 transition-all"
+                    className="flex-1 min-h-[42px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors cursor-pointer"
                   >
-                    <span>Launch This Discovery</span>
+                    <span>Begin</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </button>
 
                   <button
+                    type="button"
                     onClick={handleNextSurprise}
-                    className="p-2.5 rounded-xl border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 active:scale-95 transition-all"
+                    className="min-h-[42px] p-2.5 rounded-xl border border-[#E2E0D8] bg-[#FAF9F5] text-[#5B6057] hover:text-[#292D29] transition-colors cursor-pointer"
                     title="Try another"
+                    aria-label="Try another"
                   >
                     <Shuffle className="h-4 w-4" />
                   </button>

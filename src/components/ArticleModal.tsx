@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import { X, Heart, Bookmark, Clock, Share2, CheckCircle2 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { playGentleChime, playSoftTap } from '@/lib/audio';
+import { getTopicTone } from '@/lib/natureTheme';
 
 export default function ArticleModal() {
   const {
@@ -16,13 +16,12 @@ export default function ArticleModal() {
     showToast,
     sessionSeconds,
     activeSession,
-    logFindSomethingCompletion
+    logFindSomethingCompletion,
   } = useApp();
   const [selectedQuizOption, setSelectedQuizOption] = useState<number | null>(null);
   const [showQuizHint, setShowQuizHint] = useState(false);
 
   useEffect(() => {
-    // Reset quiz state when active article changes
     setSelectedQuizOption(null);
     setShowQuizHint(false);
   }, [activeArticle]);
@@ -47,9 +46,6 @@ export default function ArticleModal() {
     const isCorrect = idx === activeArticle.quiz.correctOptionIndex;
     if (isCorrect) {
       playGentleChime(profile.soundEnabled);
-      try {
-        confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
-      } catch {}
     } else {
       playSoftTap(profile.soundEnabled);
     }
@@ -59,6 +55,7 @@ export default function ArticleModal() {
 
   const isLiked = profile.likedItemIds.includes(activeArticle.id);
   const isSaved = profile.savedItemIds.includes(activeArticle.id);
+  const tone = getTopicTone(activeArticle.topic);
 
   const handleShare = () => {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
@@ -73,29 +70,28 @@ export default function ArticleModal() {
       aria-modal="true"
       aria-labelledby="article-modal-title"
       onClick={closeArticleModal}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-[#292D29]/40 backdrop-blur-xs animate-gentle-enter"
     >
       <div
-        className="relative flex flex-col w-full max-w-2xl max-h-[92dvh] bg-[#10141D] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative flex flex-col w-full max-w-2xl max-h-[92dvh] bg-[#FAF9F5] border border-[#E2E0D8] rounded-2xl shadow-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header Bar */}
-        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-white/[0.08] bg-[#0D1017]">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#D2F827]/10 text-[#D2F827] border border-[#D2F827]/20">
+        {/* Minimal Reading Header */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-[#E2E0D8] bg-[#F6F5F0]">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${tone.badge}`}>
               {activeArticle.topic}
             </span>
-            <span className="flex items-center gap-1 text-xs text-neutral-400">
+            <span className="flex items-center gap-1 text-xs text-[#777B72] font-mono tabular-nums">
               <Clock className="h-3 w-3" />
               {activeArticle.readTimeMinutes} min read
             </span>
             <span
-              className="hidden sm:inline-flex items-center gap-1 text-[11px] font-mono text-neutral-300 bg-white/5 px-2 py-0.5 rounded-full border border-white/5"
+              className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono text-[#5B6057] bg-[#ECEBE4] px-2.5 py-0.5 rounded-full tabular-nums"
               title="Active session timer"
             >
-              <Clock className="h-3 w-3 text-[#D2F827]" />
               <span>
-                Session: {String(Math.floor(sessionSeconds / 60)).padStart(2, '0')}:
+                {String(Math.floor(sessionSeconds / 60)).padStart(2, '0')}:
                 {String(sessionSeconds % 60).padStart(2, '0')} / {activeSession.targetDurationMinutes}m
               </span>
             </span>
@@ -103,36 +99,44 @@ export default function ArticleModal() {
 
           <div className="flex items-center gap-1">
             <button
+              type="button"
               onClick={() => toggleLike(activeArticle.id)}
-              className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors ${
-                isLiked ? 'text-rose-400 bg-rose-500/10' : 'text-neutral-400 hover:text-white hover:bg-white/5'
+              className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
+                isLiked
+                  ? 'text-[#A67F68] bg-[#A67F68]/12'
+                  : 'text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4]'
               }`}
               title="Like"
               aria-label="Like article"
             >
-              <Heart className={`h-4 w-4 ${isLiked ? 'fill-rose-400' : ''}`} />
+              <Heart className={`h-4 w-4 ${isLiked ? 'fill-[#A67F68]' : ''}`} />
             </button>
             <button
+              type="button"
               onClick={() => toggleSave(activeArticle.id)}
-              className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors ${
-                isSaved ? 'text-[#D2F827] bg-[#D2F827]/10' : 'text-neutral-400 hover:text-white hover:bg-white/5'
+              className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors cursor-pointer ${
+                isSaved
+                  ? 'text-[#71816B] bg-[#71816B]/12'
+                  : 'text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4]'
               }`}
               title="Save Bookmark"
               aria-label="Save bookmark"
             >
-              <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-[#D2F827]' : ''}`} />
+              <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-[#71816B]' : ''}`} />
             </button>
             <button
+              type="button"
               onClick={handleShare}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
               title="Copy link"
               aria-label="Share article"
             >
               <Share2 className="h-4 w-4" />
             </button>
             <button
+              type="button"
               onClick={closeArticleModal}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
               title="Close (Esc)"
               aria-label="Close modal"
             >
@@ -141,66 +145,65 @@ export default function ArticleModal() {
           </div>
         </div>
 
-        {/* Scrollable Article Body */}
-        <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-8 space-y-6 text-neutral-300">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white mb-2 leading-snug">
+        {/* Distraction-Free Reading Body */}
+        <div className="flex-1 overflow-y-auto px-5 py-7 sm:px-10 sm:py-8 space-y-6">
+          <header className="space-y-2.5">
+            <h1
+              id="article-modal-title"
+              className="font-editorial text-2xl sm:text-3xl font-medium tracking-tight text-[#292D29] leading-snug"
+            >
               {activeArticle.title}
             </h1>
-            <p className="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+            <p className="text-sm sm:text-base text-[#5B6057] leading-relaxed">
               {activeArticle.subtitle}
             </p>
-          </div>
+          </header>
 
-          {/* Editorial divider */}
-          <div className="h-px w-16 bg-[#D2F827]" />
+          <div className="h-px w-14 bg-[#71816B]" />
 
-          {/* Paragraphs */}
-          <div className="space-y-4 text-sm sm:text-base leading-relaxed text-neutral-200">
+          <div className="space-y-4 text-[15px] sm:text-base leading-[1.78] text-[#292D29]/90">
             {activeArticle.content.map((paragraph, idx) => (
-              <p key={idx} className="font-light">
-                {paragraph}
-              </p>
+              <p key={idx}>{paragraph}</p>
             ))}
           </div>
 
-          {/* Key Takeaways Box */}
-          <div className="p-4 sm:p-5 rounded-xl bg-[#161B26] border border-white/10 space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[#D2F827] flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4" />
-              Core Takeaways
-            </h3>
-            <ul className="space-y-2 text-xs sm:text-sm text-neutral-300">
+          {/* Core Takeaways */}
+          <div className="p-5 rounded-xl bg-[#ECEBE4]/75 border border-[#E2E0D8] space-y-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-[#4D5A48] flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-[#71816B]" />
+              <span>Core Takeaways</span>
+            </h2>
+            <ul className="space-y-2.5 text-xs sm:text-sm text-[#292D29]/90 leading-relaxed">
               {activeArticle.takeaways.map((takeaway, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="text-[#D2F827] mt-0.5">•</span>
+                <li key={idx} className="flex items-start gap-2.5">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#71816B] shrink-0" />
                   <span>{takeaway}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Editorial Analysis (Clearly Distinguished) */}
           {activeArticle.editorialAnalysis && (
-            <div className="p-3.5 rounded-xl bg-purple-950/20 border border-purple-500/30 text-xs text-purple-200">
-              <span className="font-bold text-purple-300 block mb-1">
-                Editorial Context & Analysis
+            <div className="p-4 rounded-xl bg-[#F6F5F0] border border-[#E2E0D8] border-l-2 border-l-[#C5B99F] text-xs sm:text-sm text-[#5B6057]">
+              <span className="font-semibold text-[#292D29] block mb-1">
+                Editorial Context
               </span>
-              <p className="font-light leading-relaxed">{activeArticle.editorialAnalysis}</p>
+              <p className="leading-relaxed">{activeArticle.editorialAnalysis}</p>
             </div>
           )}
 
-          {/* Optional Comprehension Quiz */}
+          {/* Comprehension Check */}
           {activeArticle.quiz && (
-            <div className="p-4 sm:p-5 rounded-2xl bg-[#141A27] border border-amber-400/20 space-y-3">
+            <div className="p-5 rounded-2xl bg-[#F6F5F0] border border-[#E2E0D8] space-y-3.5">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
-                  Quick Comprehension Check
+                <span className="text-[11px] uppercase font-medium tracking-wider text-[#5B4D34] bg-[#C5B99F]/30 px-2.5 py-0.5 rounded-full border border-[#C5B99F]">
+                  Comprehension Check
                 </span>
                 {activeArticle.quiz.hint && selectedQuizOption === null && (
                   <button
+                    type="button"
                     onClick={() => setShowQuizHint((prev) => !prev)}
-                    className="text-xs text-amber-400/80 hover:text-amber-300 transition-colors"
+                    className="text-xs text-[#71816B] hover:text-[#292D29] underline cursor-pointer"
                   >
                     {showQuizHint ? 'Hide Hint' : 'Need a hint?'}
                   </button>
@@ -208,14 +211,14 @@ export default function ArticleModal() {
               </div>
 
               {showQuizHint && activeArticle.quiz.hint && (
-                <p className="p-2.5 rounded-lg bg-amber-400/10 border border-amber-400/20 text-xs text-amber-200">
+                <p className="p-3 rounded-lg bg-[#C5B99F]/20 border border-[#C5B99F] text-xs text-[#5B4D34]">
                   {activeArticle.quiz.hint}
                 </p>
               )}
 
-              <h4 className="text-xs sm:text-sm font-bold text-white leading-snug">
+              <h3 className="text-sm font-medium text-[#292D29] leading-snug">
                 {activeArticle.quiz.question}
-              </h4>
+              </h3>
 
               <div className="space-y-2 pt-1">
                 {activeArticle.quiz.options.map((option: string, idx: number) => {
@@ -223,27 +226,29 @@ export default function ArticleModal() {
                   const isCorrect = idx === activeArticle.quiz!.correctOptionIndex;
                   const isAnswered = selectedQuizOption !== null;
 
-                  let optClass = 'bg-[#121622] border-white/10 text-neutral-300 hover:border-white/20';
+                  let optClass =
+                    'bg-[#FAF9F5] border-[#E2E0D8] text-[#292D29] hover:border-[#71816B]';
                   if (isAnswered) {
                     if (isCorrect) {
-                      optClass = 'bg-emerald-950/40 border-emerald-500 text-emerald-200';
+                      optClass = 'bg-[#71816B]/14 border-[#71816B] text-[#292D29]';
                     } else if (isSelected) {
-                      optClass = 'bg-rose-950/40 border-rose-500 text-rose-200';
+                      optClass = 'bg-[#A67F68]/14 border-[#A67F68] text-[#292D29]';
                     } else {
-                      optClass = 'opacity-40 bg-[#10141E] border-white/5 text-neutral-500';
+                      optClass = 'opacity-50 bg-[#F6F5F0] border-[#E2E0D8] text-[#777B72]';
                     }
                   }
 
                   return (
                     <button
                       key={idx}
+                      type="button"
                       disabled={isAnswered}
                       onClick={() => handleQuizOption(idx)}
-                      className={`w-full p-3 rounded-xl border text-left text-xs font-medium transition-all flex items-center justify-between gap-3 ${optClass}`}
+                      className={`w-full p-3.5 rounded-xl border text-left text-xs sm:text-sm font-medium transition-colors flex items-center justify-between gap-3 cursor-pointer disabled:cursor-default ${optClass}`}
                     >
                       <span>{option}</span>
                       {isAnswered && isCorrect && (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-[#71816B] shrink-0" />
                       )}
                     </button>
                   );
@@ -251,29 +256,26 @@ export default function ArticleModal() {
               </div>
 
               {selectedQuizOption !== null && (
-                <div className="p-3 rounded-xl bg-[#0F1420] border border-white/10 text-xs text-neutral-300 leading-relaxed">
-                  <span className="font-bold text-white block mb-0.5">Explanation:</span>
+                <div className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] text-xs sm:text-sm text-[#5B6057] leading-relaxed">
+                  <span className="font-semibold text-[#292D29] block mb-1">Note:</span>
                   {activeArticle.quiz.explanation}
                 </div>
               )}
             </div>
           )}
 
-          {/* Source Citation */}
           {activeArticle.sourceName && (
-            <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs text-neutral-500">
+            <div className="pt-3 border-t border-[#E2E0D8] flex items-center justify-between text-xs text-[#777B72]">
               <span>Source: {activeArticle.sourceName}</span>
-              <span className="flex items-center gap-1 text-neutral-400">
-                Published {activeArticle.publishedDate}
-              </span>
+              <span>Published {activeArticle.publishedDate}</span>
             </div>
           )}
         </div>
 
-        {/* Footer actions */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-white/[0.08] bg-[#0D1017]">
-          <span className="text-xs text-neutral-400">
-            Finished reading? Give your eyes a rest.
+        {/* Quiet Completion Footer */}
+        <div className="flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 border-t border-[#E2E0D8] bg-[#F6F5F0]">
+          <span className="text-xs text-[#777B72] hidden sm:inline">
+            Finished reading? Rest your eyes for a moment.
           </span>
           <button
             type="button"
@@ -286,9 +288,9 @@ export default function ArticleModal() {
               );
               closeArticleModal();
             }}
-            className="min-h-[44px] px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-[#D2F827] text-black hover:bg-[#BDF010] active:scale-95 transition-all cursor-pointer touch-manipulation"
+            className="ml-auto min-h-[44px] px-5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors cursor-pointer touch-manipulation"
           >
-            Mark Read & Done
+            Mark Read &amp; Done
           </button>
         </div>
       </div>

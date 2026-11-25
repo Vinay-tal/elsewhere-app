@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Newsreader, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import { AppProvider } from '@/context/AppContext';
 import Header from '@/components/Header';
@@ -15,20 +15,29 @@ import OfflineIndicator from '@/components/OfflineIndicator';
 import ServiceWorkerRegistration from '@/components/ServiceWorkerRegistration';
 import Toast from '@/components/Toast';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: '--font-sans-body',
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const newsreader = Newsreader({
+  variable: '--font-serif-editorial',
   subsets: ['latin'],
+  style: ['normal', 'italic'],
+  weight: ['400', '500', '600'],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: '--font-mono-code',
+  subsets: ['latin'],
+  weight: ['400', '500'],
 });
 
 export const metadata: Metadata = {
   title: 'Elsewhere — Curiosity Over Mindless Scrolling',
   description:
-    'A healthy, intentional alternative to infinite scroll feeds. Discover fascinating ideas, solve puzzles, understand world news, and disconnect into reality.',
+    'A calm, intentional alternative to infinite scroll feeds. Discover thoughtful ideas, solve puzzles, understand world news, and disconnect into reality.',
   applicationName: 'Elsewhere',
   manifest: '/manifest.webmanifest',
   icons: {
@@ -43,7 +52,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
     title: 'Elsewhere',
   },
   formatDetection: {
@@ -52,7 +61,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0A0D12',
+  themeColor: '#F6F5F0',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
@@ -67,14 +76,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
+      className={`${plusJakarta.variable} ${newsreader.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#0A0D12] text-[#F4F4F6] selection:bg-[#D2F827]/30 selection:text-[#D2F827]">
+      <body className="min-h-full flex flex-col bg-[#F6F5F0] text-[#292D29] selection:bg-[#71816B]/20 selection:text-[#292D29]">
         <AppProvider>
           <ServiceWorkerRegistration />
           <OfflineIndicator />
           <Header />
-          <main className="flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-12">{children}</main>
+          <main className="flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-16">
+            {children}
+          </main>
           <BottomNav />
           <ArticleModal />
           <ChallengeModal />

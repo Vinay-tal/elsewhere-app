@@ -4,10 +4,11 @@ import React, { useState, useMemo } from 'react';
 import {
   getAllChallenges,
   filterChallenges,
-  calculateChallengeMetrics
+  calculateChallengeMetrics,
 } from '@/lib/challengeService';
 import { ChallengeType, ChallengeDifficulty, ChallengeItem } from '@/types';
 import { useApp } from '@/context/AppContext';
+import { getChallengeTone } from '@/lib/natureTheme';
 import {
   Trophy,
   CheckCircle,
@@ -23,7 +24,7 @@ import {
   Eye,
   Terminal,
   Brain,
-  HelpCircle
+  HelpCircle,
 } from 'lucide-react';
 
 export default function ChallengesPage() {
@@ -35,7 +36,6 @@ export default function ChallengesPage() {
 
   const allChallenges = useMemo(() => getAllChallenges(), []);
 
-  // Compute mindful cognitive metrics
   const metrics = useMemo(() => {
     return calculateChallengeMetrics(
       profile.completedChallengeIds,
@@ -44,7 +44,6 @@ export default function ChallengesPage() {
     );
   }, [profile.completedChallengeIds, profile.completedChallengeScores, allChallenges.length]);
 
-  // Categories list
   const categoryTabs: { label: string; value: ChallengeType | 'All' | 'Saved'; icon: React.ReactNode }[] = [
     { label: 'All Challenges', value: 'All', icon: <Sparkles className="h-3.5 w-3.5" /> },
     { label: 'Logic & Deduction', value: 'logic', icon: <Target className="h-3.5 w-3.5" /> },
@@ -62,7 +61,6 @@ export default function ChallengesPage() {
 
   const difficulties: (ChallengeDifficulty | 'All')[] = ['All', 'Quick', 'Medium', 'Deep'];
 
-  // Filtered challenges
   const filteredChallenges = useMemo(() => {
     const isSavedTab = selectedCategory === 'Saved';
     return filterChallenges({
@@ -75,74 +73,74 @@ export default function ChallengesPage() {
   }, [selectedCategory, selectedDifficulty, searchQuery, profile.savedItemIds]);
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 space-y-7">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10 space-y-8">
       {/* Header */}
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-400">
-          <Trophy className="h-4 w-4" />
-          <span>Interactive Cognitive Library</span>
+      <div className="space-y-2 pb-6 border-b border-[#E2E0D8]">
+        <div className="flex items-center gap-1.5 text-xs font-medium text-[#71816B]">
+          <Trophy className="h-3.5 w-3.5" />
+          <span>Cognitive Library</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-          Challenges & Mental Workouts
+        <h1 className="font-editorial text-3xl sm:text-4xl font-medium tracking-tight text-[#292D29]">
+          Challenges &amp; Mental Workouts
         </h1>
-        <p className="text-xs sm:text-sm text-neutral-400 font-light max-w-2xl">
-          Active reasoning instead of passive scrolling. Real deductive logic, beginner code, memory patterns, and immediate educational feedback without streaks or point inflation.
+        <p className="text-sm text-[#5B6057] max-w-2xl leading-relaxed">
+          Active reasoning instead of passive scrolling. Deductive logic, code puzzles, and memory exercises with calm explanations and zero streak pressure.
         </p>
       </div>
 
-      {/* Progress & Cognition Dashboard */}
-      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#141926] to-[#121620] border border-amber-400/20 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-        <div className="space-y-1.5">
-          <span className="text-[10px] uppercase font-bold tracking-wider text-amber-400 flex items-center gap-1.5">
-            <Sparkles className="h-3 w-3" />
-            Mindful Activity Progress
+      {/* Quiet Progress Strip */}
+      <div className="p-5 rounded-2xl bg-[#ECEBE4]/75 border border-[#E2E0D8] flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+        <div className="space-y-1">
+          <span className="text-[11px] uppercase tracking-wider font-medium text-[#777B72] block">
+            Exploration Pace
           </span>
-          <div className="text-lg sm:text-xl font-bold text-white flex items-center gap-3">
-            <span>{metrics.completedCount} of {metrics.totalCount} Explored</span>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-300 border border-amber-400/20">
-              {metrics.completionPercentage}% Complete
+          <div className="flex items-baseline gap-3">
+            <span className="font-editorial text-xl sm:text-2xl font-medium text-[#292D29]">
+              {metrics.completedCount} of {metrics.totalCount} explored
+            </span>
+            <span className="text-xs font-mono text-[#71816B] tabular-nums">
+              {metrics.completionPercentage}%
             </span>
           </div>
-          <p className="text-xs text-neutral-400 font-light flex items-center gap-2">
-            <span>Accuracy: <strong className="text-emerald-400 font-semibold">{metrics.accuracyPercentage}%</strong></span>
-            <span>•</span>
-            <span>Mindful Minutes: <strong className="text-white font-medium">{profile.totalMindfulMinutes}m</strong></span>
-            <span>•</span>
-            <span className="text-neutral-500">No penalties for retries</span>
+          <p className="text-xs text-[#5B6057]">
+            Accuracy: <strong className="font-medium text-[#292D29]">{metrics.accuracyPercentage}%</strong>
+            {' · '}
+            Mindful time: <strong className="font-medium text-[#292D29]">{profile.totalMindfulMinutes}m</strong>
+            {' · '}
+            <span className="text-[#777B72]">No penalties for retries</span>
           </p>
         </div>
 
-        {/* Minimal Progress Bar */}
-        <div className="w-full sm:w-56 space-y-1.5 self-center">
-          <div className="flex justify-between text-[11px] text-neutral-400">
-            <span>Cognitive Engagement</span>
-            <span>{metrics.completionPercentage}%</span>
+        <div className="w-full sm:w-56 space-y-1.5">
+          <div className="flex justify-between text-[11px] text-[#777B72]">
+            <span>Progress</span>
+            <span className="font-mono tabular-nums">{metrics.completionPercentage}%</span>
           </div>
-          <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+          <div className="h-2 w-full bg-[#E2E0D8] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-amber-400 to-[#D2F827] rounded-full transition-all duration-500"
+              className="h-full bg-[#71816B] rounded-full transition-all duration-500"
               style={{ width: `${metrics.completionPercentage}%` }}
             />
           </div>
         </div>
       </div>
 
-      {/* Search Bar & Difficulty Filters */}
+      {/* Search & Difficulty */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#777B72]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by logic, question, or keyword..."
-            className="w-full pl-10 pr-9 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-base sm:text-sm text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400/50 focus:bg-white/[0.07] transition-all min-h-[44px]"
+            className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#FAF9F5] border border-[#E2E0D8] text-base sm:text-sm text-[#292D29] placeholder-[#777B72] focus:outline-none focus:border-[#71816B] transition-colors min-h-[44px]"
           />
           {searchQuery && (
             <button
+              type="button"
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-neutral-400 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 p-2 text-[#777B72] hover:text-[#292D29] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
@@ -150,17 +148,17 @@ export default function ChallengesPage() {
           )}
         </div>
 
-        {/* Difficulty Segmented Control */}
-        <div className="flex items-center gap-1.5 bg-white/[0.03] p-1 rounded-xl border border-white/10 self-start sm:self-auto">
-          <span className="text-[11px] text-neutral-400 px-2 font-medium">Difficulty:</span>
+        <div className="flex items-center gap-1 bg-[#ECEBE4]/80 p-1 rounded-xl border border-[#E2E0D8] self-start sm:self-auto">
+          <span className="text-[11px] text-[#777B72] px-2.5 font-medium">Pace:</span>
           {difficulties.map((diff) => (
             <button
               key={diff}
+              type="button"
               onClick={() => setSelectedDifficulty(diff)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 selectedDifficulty === diff
-                  ? 'bg-amber-400 text-black font-semibold'
-                  : 'text-neutral-400 hover:text-white'
+                  ? 'bg-[#FAF9F5] text-[#292D29] shadow-xs border border-[#E2E0D8]'
+                  : 'text-[#777B72] hover:text-[#292D29]'
               }`}
             >
               {diff}
@@ -176,13 +174,14 @@ export default function ChallengesPage() {
           return (
             <button
               key={cat.value}
+              type="button"
               role="tab"
               aria-selected={isSelected}
               onClick={() => setSelectedCategory(cat.value)}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium whitespace-nowrap border transition-all min-h-[42px] ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-medium whitespace-nowrap border transition-colors min-h-[42px] cursor-pointer ${
                 isSelected
-                  ? 'bg-amber-400 text-black border-amber-400 font-semibold shadow-sm'
-                  : 'bg-white/[0.03] text-neutral-300 border-white/10 hover:border-white/20 hover:text-white'
+                  ? 'bg-[#71816B] text-[#FAF9F5] border-[#71816B]'
+                  : 'bg-[#FAF9F5] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B]'
               }`}
             >
               {cat.icon}
@@ -194,21 +193,24 @@ export default function ChallengesPage() {
 
       {/* Challenges Grid */}
       {filteredChallenges.length === 0 ? (
-        <div className="text-center py-12 px-4 rounded-2xl bg-[#121620]/60 border border-white/10 space-y-3">
-          <HelpCircle className="h-8 w-8 text-neutral-500 mx-auto" />
-          <h3 className="text-base font-bold text-white">No challenges match your filters</h3>
-          <p className="text-xs text-neutral-400 max-w-sm mx-auto font-light">
+        <div className="text-center py-14 px-4 rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] space-y-3">
+          <HelpCircle className="h-7 w-7 text-[#777B72] mx-auto" />
+          <h3 className="font-editorial text-xl font-medium text-[#292D29]">
+            No challenges match your filters
+          </h3>
+          <p className="text-xs text-[#777B72] max-w-sm mx-auto">
             {selectedCategory === 'Saved'
-              ? 'You have not saved any challenges yet. Click the bookmark icon on any challenge to save it here for later.'
-              : 'Try clearing your search query or switching to another category.'}
+              ? 'You have not saved any challenges yet. Bookmark any puzzle to keep it here.'
+              : 'Try clearing your search or switching categories.'}
           </p>
           <button
+            type="button"
             onClick={() => {
               setSelectedCategory('All');
               setSelectedDifficulty('All');
               setSearchQuery('');
             }}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/10 text-white hover:bg-white/20 transition-all"
+            className="px-4 py-2 rounded-xl text-xs font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors cursor-pointer"
           >
             Reset Filters
           </button>
@@ -220,40 +222,38 @@ export default function ChallengesPage() {
             const scoreData = profile.completedChallengeScores[challenge.id];
             const isCorrect = scoreData?.correct ?? false;
             const isItemSaved = isSaved(challenge.id);
+            const tone = getChallengeTone(challenge.category);
 
             return (
               <div
                 key={challenge.id}
-                className={`group relative flex flex-col justify-between p-5 rounded-2xl border transition-all duration-200 ${
+                className={`group flex flex-col justify-between p-5 rounded-2xl border transition-colors ${
                   isCompleted
-                    ? isCorrect
-                      ? 'bg-[#0E151E] border-emerald-500/30'
-                      : 'bg-[#15121A] border-amber-500/30'
-                    : 'bg-[#121620] border-white/10 hover:border-amber-400/30'
+                    ? 'bg-[#ECEBE4]/55 border-[#CFCBC0]'
+                    : 'bg-[#FAF9F5] border-[#E2E0D8] hover:border-[#CFCBC0]'
                 }`}
               >
                 <div className="space-y-3">
-                  {/* Top Bar: Category, Difficulty, & Bookmark */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/5 text-amber-300 border border-amber-400/20">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider font-medium border ${tone.badge}`}>
                         {challenge.category}
                       </span>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] text-neutral-400 bg-white/5">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] text-[#777B72] bg-[#ECEBE4]">
                         {challenge.difficulty}
                       </span>
-                      <span className="text-[11px] text-neutral-400 font-light">
+                      <span className="text-[11px] text-[#777B72]">
                         {challenge.topic}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       {isCompleted && (
                         <span
-                          className={`flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md ${
+                          className={`flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border ${
                             isCorrect
-                              ? 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/20'
-                              : 'text-amber-300 bg-amber-500/10 border border-amber-500/20'
+                              ? 'text-[#4D5A48] bg-[#71816B]/12 border-[#71816B]/25'
+                              : 'text-[#63563D] bg-[#C5B99F]/30 border-[#C5B99F]'
                           }`}
                         >
                           <CheckCircle className="h-3 w-3" />
@@ -262,58 +262,58 @@ export default function ChallengesPage() {
                       )}
 
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           toggleSave(challenge.id);
                         }}
                         aria-label={isItemSaved ? 'Remove bookmark' : 'Bookmark challenge'}
                         title={isItemSaved ? 'Saved to bookmarks' : 'Save for later'}
-                        className={`p-1.5 rounded-lg border transition-all ${
+                        className={`p-2 rounded-lg transition-colors cursor-pointer ${
                           isItemSaved
-                            ? 'bg-amber-400/15 border-amber-400/30 text-amber-300'
-                            : 'bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:bg-white/10'
+                            ? 'bg-[#71816B]/12 text-[#71816B]'
+                            : 'text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4]'
                         }`}
                       >
-                        <Bookmark className={`h-3.5 w-3.5 ${isItemSaved ? 'fill-amber-400 text-amber-400' : ''}`} />
+                        <Bookmark className={`h-3.5 w-3.5 ${isItemSaved ? 'fill-[#71816B]' : ''}`} />
                       </button>
                     </div>
                   </div>
 
-                  {/* Title & Prompt Preview */}
                   <div>
-                    <h3 className="text-base font-bold text-white group-hover:text-amber-300 transition-colors leading-snug">
+                    <h2 className="font-editorial text-lg font-medium text-[#292D29] group-hover:text-[#5E6D59] transition-colors leading-snug">
                       {challenge.title}
-                    </h3>
-                    <p className="text-xs text-neutral-400 mt-1.5 line-clamp-2 leading-relaxed font-light">
+                    </h2>
+                    <p className="text-xs text-[#5B6057] mt-1.5 line-clamp-2 leading-relaxed">
                       {challenge.instructions || challenge.prompt}
                     </p>
                   </div>
                 </div>
 
-                {/* Bottom Bar: Duration & Action */}
-                <div className="pt-4 mt-3 border-t border-white/[0.04] flex items-center justify-between">
-                  <span className="flex items-center gap-1 text-[11px] text-neutral-400">
-                    <Clock className="h-3 w-3 text-neutral-500" />
+                <div className="pt-4 mt-4 border-t border-[#E2E0D8] flex items-center justify-between">
+                  <span className="flex items-center gap-1 text-xs text-[#777B72] font-mono tabular-nums">
+                    <Clock className="h-3.5 w-3.5" />
                     ~{challenge.timeEstimateMinutes} min
                   </span>
 
                   <button
+                    type="button"
                     onClick={() => openChallengeModal(challenge)}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all min-h-[36px] ${
+                    className={`min-h-[40px] flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
                       isCompleted
-                        ? 'bg-white/10 text-white hover:bg-white/20'
-                        : 'bg-amber-400 text-black hover:bg-amber-300 shadow-sm'
+                        ? 'bg-[#ECEBE4] text-[#292D29] hover:bg-[#E2E0D8]'
+                        : 'bg-[#292D29] text-[#FAF9F5] hover:bg-[#3F453F]'
                     }`}
                   >
                     {isCompleted ? (
                       <>
-                        <RotateCcw className="h-3 w-3" />
-                        Review / Retry
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        <span>Review / Retry</span>
                       </>
                     ) : (
                       <>
-                        Play Challenge
-                        <ArrowRight className="h-3 w-3" />
+                        <span>Start Puzzle</span>
+                        <ArrowRight className="h-3.5 w-3.5" />
                       </>
                     )}
                   </button>

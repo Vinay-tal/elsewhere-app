@@ -10,10 +10,17 @@ import {
   Pause,
   Play,
   RotateCcw,
-  Sparkles,
   SlidersHorizontal,
-  HeartHandshake
+  HeartHandshake,
 } from 'lucide-react';
+
+const NAV_LINKS = [
+  { href: '/', label: 'Discover' },
+  { href: '/explore', label: 'Explore' },
+  { href: '/challenges', label: 'Challenges' },
+  { href: '/world-pulse', label: 'World Pulse' },
+  { href: '/do-something', label: 'Do Something' },
+] as const;
 
 export default function Header() {
   const pathname = usePathname();
@@ -26,7 +33,7 @@ export default function Header() {
     resetSessionTimer,
     setSessionTargetDuration,
     openEndOfSessionModal,
-    openOnboardingModal
+    openOnboardingModal,
   } = useApp();
 
   const [isSessionMenuOpen, setIsSessionMenuOpen] = useState(false);
@@ -40,114 +47,105 @@ export default function Header() {
   const dailyGoalMinutes = profile.dailySessionGoalMinutes || 30;
   const isNearLimit = minutes >= targetMinutes;
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsSessionMenuOpen(false);
       }
     };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsSessionMenuOpen(false);
+    };
     if (isSessionMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      window.addEventListener('keydown', handleKeyDown);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isSessionMenuOpen]);
 
   const durations = [5, 10, 15, 20, 30];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#0A0D12]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-40 w-full border-b border-[#E2E0D8] bg-[#F6F5F0]/92 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4 sm:px-6">
         {/* Brand */}
-        <Link href="/" className="group flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#1E2433] to-[#121620] border border-white/10 shadow-sm transition-transform group-hover:scale-105">
-            <span className="text-[#D2F827] font-bold text-base leading-none">E</span>
+        <Link href="/" className="group flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E2E0D8] bg-[#ECEBE4] transition-colors group-hover:border-[#71816B]">
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="7.5" stroke="#71816B" strokeWidth="1.5" />
+              <circle cx="12" cy="12" r="2.2" fill="#71816B" />
+            </svg>
           </div>
           <div className="flex flex-col">
-            <span className="font-semibold tracking-tight text-white text-base leading-none">
+            <span className="font-editorial text-lg font-medium tracking-tight text-[#292D29] leading-none">
               Elsewhere
             </span>
-            <span className="text-[10px] text-neutral-400 tracking-wider uppercase font-medium">
-              Mindful Discovery
+            <span className="mt-0.5 text-[10px] tracking-wider uppercase text-[#777B72]">
+              Quiet Discovery
             </span>
           </div>
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-1 text-sm font-medium">
-          <Link
-            href="/"
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
-              pathname === '/' ? 'text-white bg-white/10' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            Discover
-          </Link>
-          <Link
-            href="/explore"
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
-              pathname === '/explore' ? 'text-white bg-white/10' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            Explore
-          </Link>
-          <Link
-            href="/challenges"
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
-              pathname === '/challenges' ? 'text-white bg-white/10' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            Challenges
-          </Link>
-          <Link
-            href="/world-pulse"
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
-              pathname === '/world-pulse' ? 'text-white bg-white/10' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            World Pulse
-          </Link>
-          <Link
-            href="/do-something"
-            className={`px-3 py-1.5 rounded-lg transition-colors ${
-              pathname === '/do-something' ? 'text-[#D2F827] bg-[#D2F827]/10' : 'text-neutral-400 hover:text-white'
-            }`}
-          >
-            Do Something
-          </Link>
+        <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1 text-sm">
+          {NAV_LINKS.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`relative px-3 py-1.5 rounded-lg transition-colors ${
+                  isActive
+                    ? 'bg-[#ECEBE4] text-[#292D29] font-medium'
+                    : 'text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4]/60'
+                }`}
+              >
+                {link.label}
+                {isActive && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute bottom-0.5 left-3 right-3 h-[1.5px] rounded-full bg-[#71816B]"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Mindful Session Indicator & Controls */}
-        <div className="relative flex items-center gap-2.5" ref={menuRef}>
+        {/* Mindful Session Indicator & Profile */}
+        <div className="relative flex items-center gap-2" ref={menuRef}>
           <button
+            type="button"
             onClick={() => setIsSessionMenuOpen((prev) => !prev)}
+            aria-expanded={isSessionMenuOpen}
             aria-label="Mindful Session Timer Controls"
             title="Click to adjust session duration or pause timer"
-            className={`flex items-center gap-1.5 px-3 py-1.5 min-h-[44px] rounded-full text-xs font-mono font-semibold border transition-all ${
+            className={`flex items-center gap-2 px-3 py-1.5 min-h-[44px] rounded-full text-xs font-mono border transition-colors cursor-pointer ${
               isNearLimit
-                ? 'bg-amber-500/15 text-amber-300 border-amber-500/40 animate-pulse'
+                ? 'bg-[#C5B99F]/30 text-[#5B4D34] border-[#C5B99F]'
                 : activeSession.isPaused
-                ? 'bg-white/5 text-neutral-400 border-white/10'
-                : 'bg-white/[0.04] text-neutral-200 border-white/10 hover:border-[#D2F827]/40 hover:text-white'
+                ? 'bg-[#ECEBE4] text-[#777B72] border-[#E2E0D8]'
+                : 'bg-[#FAF9F5] text-[#292D29] border-[#E2E0D8] hover:border-[#71816B]'
             }`}
           >
             <Clock
               className={`h-3.5 w-3.5 ${
                 isNearLimit
-                  ? 'text-amber-400'
+                  ? 'text-[#8C7A56]'
                   : activeSession.isPaused
-                  ? 'text-neutral-500'
-                  : 'text-[#D2F827]'
+                  ? 'text-[#777B72]'
+                  : 'text-[#71816B]'
               }`}
             />
-            <span>{timeFormatted}</span>
-            <span className="text-[10px] text-neutral-400 font-sans">
+            <span className="tabular-nums font-medium">{timeFormatted}</span>
+            <span className="text-[11px] text-[#777B72] font-sans">
               / {targetMinutes}m
             </span>
             {activeSession.isPaused && (
-              <span className="text-[9px] uppercase px-1 rounded bg-amber-400/20 text-amber-300">
+              <span className="text-[10px] font-sans px-1.5 py-0.5 rounded bg-[#E2E0D8] text-[#5B6057]">
                 Paused
               </span>
             )}
@@ -155,36 +153,35 @@ export default function Header() {
 
           {/* Session Controls Popover */}
           {isSessionMenuOpen && (
-            <div className="absolute right-0 top-14 w-[calc(100vw-2rem)] sm:w-80 max-w-sm p-4 rounded-2xl bg-[#10141D] border border-white/15 shadow-2xl space-y-4 z-50 animate-in fade-in zoom-in-95 duration-150">
-              {/* Header */}
-              <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+            <div className="absolute right-0 top-14 w-[calc(100vw-2rem)] sm:w-80 max-w-sm p-5 rounded-2xl bg-[#FAF9F5] border border-[#E2E0D8] shadow-lg space-y-4 z-50 animate-gentle-enter">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E2E0D8]">
                 <div className="space-y-0.5">
-                  <span className="text-xs font-bold text-white block">
-                    Session & Digital Wellbeing
+                  <span className="text-xs font-semibold text-[#292D29] block">
+                    Session Intention
                   </span>
-                  <span className="text-[10px] text-neutral-400 font-light">
-                    Intentional time limits • No guilt
+                  <span className="text-[11px] text-[#777B72]">
+                    Gentle boundaries, zero guilt
                   </span>
                 </div>
-                <span className="font-mono text-sm font-bold text-[#D2F827]">
+                <span className="font-mono text-sm font-medium text-[#71816B] tabular-nums">
                   {timeFormatted}
                 </span>
               </div>
 
-              {/* Select Session Duration */}
-              <div className="space-y-1.5">
-                <span className="text-[11px] text-neutral-300 font-medium block">
-                  Select Session Duration:
+              <div className="space-y-2">
+                <span className="text-[11px] text-[#5B6057] font-medium block">
+                  Session duration
                 </span>
                 <div className="grid grid-cols-5 gap-1.5">
                   {durations.map((d) => (
                     <button
                       key={d}
+                      type="button"
                       onClick={() => setSessionTargetDuration(d)}
-                      className={`py-1 rounded-lg text-xs font-semibold border transition-all ${
+                      className={`py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                         targetMinutes === d
-                          ? 'bg-[#D2F827] text-black border-[#D2F827]'
-                          : 'bg-white/[0.03] text-neutral-400 border-white/10 hover:text-white'
+                          ? 'bg-[#71816B] text-[#FAF9F5] border-[#71816B]'
+                          : 'bg-[#F6F5F0] text-[#777B72] border-[#E2E0D8] hover:text-[#292D29]'
                       }`}
                     >
                       {d}m
@@ -193,61 +190,59 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Play / Pause / Reset Controls */}
               <div className="grid grid-cols-2 gap-2">
                 {activeSession.isPaused ? (
                   <button
+                    type="button"
                     onClick={resumeSessionTimer}
-                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold bg-[#D2F827] text-black hover:bg-[#BDF010] transition-colors"
+                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors cursor-pointer"
                   >
-                    <Play className="h-3.5 w-3.5 fill-black" />
-                    <span>Resume Timer</span>
+                    <Play className="h-3.5 w-3.5 fill-current" />
+                    <span>Resume</span>
                   </button>
                 ) : (
                   <button
+                    type="button"
                     onClick={pauseSessionTimer}
-                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-white/10 text-neutral-200 hover:bg-white/5 transition-colors"
+                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-[#E2E0D8] bg-[#F6F5F0] text-[#292D29] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
                   >
                     <Pause className="h-3.5 w-3.5" />
-                    <span>Pause Timer</span>
+                    <span>Pause</span>
                   </button>
                 )}
 
                 <button
+                  type="button"
                   onClick={() => resetSessionTimer()}
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-[#E2E0D8] bg-[#F6F5F0] text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                  <span>Reset Time</span>
+                  <span>Reset</span>
                 </button>
               </div>
 
-              {/* End Session Now & Reflect */}
               <button
+                type="button"
                 onClick={() => {
                   setIsSessionMenuOpen(false);
                   openEndOfSessionModal();
                 }}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/15 text-white transition-colors"
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-medium bg-[#ECEBE4] hover:bg-[#E2E0D8] text-[#292D29] transition-colors cursor-pointer"
               >
-                <HeartHandshake className="h-3.5 w-3.5 text-rose-400" />
-                <span>Finish Session & Reflect</span>
+                <HeartHandshake className="h-3.5 w-3.5 text-[#71816B]" />
+                <span>Finish Session &amp; Reflect</span>
               </button>
 
-              {/* Daily Goal Progress */}
-              <div className="pt-2 border-t border-white/[0.08] space-y-1 text-[11px] text-neutral-400">
+              <div className="pt-3 border-t border-[#E2E0D8] space-y-1.5 text-[11px] text-[#777B72]">
                 <div className="flex justify-between">
-                  <span className="flex items-center gap-1">
-                    <Sparkles className="h-3 w-3 text-purple-400" />
-                    Daily Intention:
-                  </span>
-                  <span className="font-mono text-white font-medium">
+                  <span>Daily intention</span>
+                  <span className="font-mono text-[#292D29] font-medium tabular-nums">
                     {profile.totalMindfulMinutes}m / {dailyGoalMinutes}m
                   </span>
                 </div>
-                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-[#ECEBE4] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-400 to-[#D2F827] rounded-full transition-all duration-300"
+                    className="h-full bg-[#71816B] rounded-full transition-all duration-300"
                     style={{
                       width: `${Math.min(
                         100,
@@ -258,16 +253,16 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Quick Personalize Link */}
               <button
+                type="button"
                 onClick={() => {
                   setIsSessionMenuOpen(false);
                   openOnboardingModal();
                 }}
-                className="w-full flex items-center justify-center gap-1.5 text-[11px] text-neutral-400 hover:text-[#D2F827] transition-colors pt-1"
+                className="w-full flex items-center justify-center gap-1.5 text-[11px] text-[#777B72] hover:text-[#71816B] transition-colors pt-1 cursor-pointer"
               >
                 <SlidersHorizontal className="h-3 w-3" />
-                <span>Change Curiosity Interests</span>
+                <span>Adjust Curiosity Interests</span>
               </button>
             </div>
           )}
@@ -275,10 +270,10 @@ export default function Header() {
           {/* Profile Link */}
           <Link
             href="/profile"
-            className={`flex h-9 w-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border transition-all ${
+            className={`flex h-9 w-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border transition-colors ${
               pathname === '/profile'
-                ? 'bg-[#D2F827] text-black border-[#D2F827]'
-                : 'bg-white/[0.04] text-neutral-300 border-white/10 hover:border-white/30 hover:text-white'
+                ? 'bg-[#71816B] text-[#FAF9F5] border-[#71816B]'
+                : 'bg-[#FAF9F5] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B] hover:text-[#292D29]'
             }`}
             title="Profile & Settings"
             aria-label="Profile and Settings"

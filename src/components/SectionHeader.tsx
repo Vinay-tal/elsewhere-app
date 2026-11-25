@@ -20,16 +20,16 @@ export default function SectionHeader({
   viewAllLabel = 'View all',
 }: SectionHeaderProps) {
   return (
-    <div className="flex items-end justify-between gap-2 pb-1 border-b border-white/[0.04]">
-      <div className="space-y-0.5">
-        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-400">
-          <span className="text-[#D2F827]">{icon}</span>
-          <h2 className="text-white text-sm sm:text-base font-bold tracking-tight">
+    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-3 border-b border-[#E2E0D8]">
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="text-[#71816B]">{icon}</span>
+          <h2 className="font-editorial text-xl sm:text-2xl font-medium tracking-tight text-[#292D29]">
             {title}
           </h2>
         </div>
         {subtitle && (
-          <p className="text-xs text-neutral-400 font-light">
+          <p className="text-xs sm:text-sm text-[#777B72]">
             {subtitle}
           </p>
         )}
@@ -38,10 +38,10 @@ export default function SectionHeader({
       {viewAllHref && (
         <Link
           href={viewAllHref}
-          className="group flex items-center gap-1 text-xs font-semibold text-[#D2F827] hover:text-[#BDF010] transition-colors shrink-0 pb-0.5"
+          className="group inline-flex items-center gap-1.5 text-xs font-medium text-[#71816B] hover:text-[#292D29] transition-colors shrink-0 self-start sm:self-auto"
         >
           <span>{viewAllLabel}</span>
-          <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+          <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
       )}
     </div>

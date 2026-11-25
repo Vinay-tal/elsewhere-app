@@ -11,7 +11,7 @@ export default function OnboardingModal() {
     isOnboardingModalOpen,
     closeOnboardingModal,
     completeOnboarding,
-    profile
+    profile,
   } = useApp();
 
   const [step, setStep] = useState<1 | 2>(1);
@@ -31,9 +31,7 @@ export default function OnboardingModal() {
 
   const toggleTopic = (topic: Topic) => {
     setSelectedTopics((prev) =>
-      prev.includes(topic)
-        ? prev.filter((t) => t !== topic)
-        : [...prev, topic]
+      prev.includes(topic) ? prev.filter((t) => t !== topic) : [...prev, topic]
     );
   };
 
@@ -51,24 +49,24 @@ export default function OnboardingModal() {
       aria-modal="true"
       aria-labelledby="onboarding-modal-title"
       onClick={closeOnboardingModal}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-[#292D29]/45 backdrop-blur-xs animate-gentle-enter"
     >
       <div
-        className="relative flex flex-col w-full max-w-xl max-h-[92vh] bg-[#10141D] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="relative flex flex-col w-full max-w-xl max-h-[92dvh] bg-[#FAF9F5] border border-[#E2E0D8] rounded-2xl shadow-xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.08] bg-[#0D1017]">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#D2F827]/15 border border-[#D2F827]/30 text-[#D2F827]">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E2E0D8] bg-[#F6F5F0]">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#ECEBE4] border border-[#E2E0D8] text-[#71816B]">
               <Compass className="h-4 w-4" />
             </div>
             <div>
-              <span className="text-xs uppercase font-bold tracking-wider text-[#D2F827] block">
+              <span className="text-xs font-semibold text-[#4D5A48] block">
                 Welcome to Elsewhere
               </span>
-              <span className="text-[11px] text-neutral-400">
-                Step {step} of 2 • Curiosity over mindless scrolling
+              <span className="text-[11px] text-[#777B72]">
+                Step {step} of 2 · Curiosity over scrolling
               </span>
             </div>
           </div>
@@ -76,20 +74,20 @@ export default function OnboardingModal() {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5 mr-1">
               <span
-                className={`h-2 w-6 rounded-full transition-all ${
-                  step === 1 ? 'bg-[#D2F827]' : 'bg-white/20'
+                className={`h-1.5 w-6 rounded-full transition-colors ${
+                  step === 1 ? 'bg-[#71816B]' : 'bg-[#E2E0D8]'
                 }`}
               />
               <span
-                className={`h-2 w-6 rounded-full transition-all ${
-                  step === 2 ? 'bg-[#D2F827]' : 'bg-white/20'
+                className={`h-1.5 w-6 rounded-full transition-colors ${
+                  step === 2 ? 'bg-[#71816B]' : 'bg-[#E2E0D8]'
                 }`}
               />
             </div>
             <button
               type="button"
               onClick={closeOnboardingModal}
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl text-[#777B72] hover:text-[#292D29] hover:bg-[#ECEBE4] transition-colors cursor-pointer"
               title="Close modal"
               aria-label="Close modal"
             >
@@ -98,27 +96,26 @@ export default function OnboardingModal() {
           </div>
         </div>
 
-        {/* Content Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 text-neutral-200">
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
           {step === 1 ? (
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="space-y-1.5">
                 <h2
                   id="onboarding-modal-title"
-                  className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight"
+                  className="font-editorial text-2xl sm:text-3xl font-medium tracking-tight text-[#292D29] leading-snug"
                 >
-                  What sparks your genuine curiosity?
+                  What sparks your curiosity?
                 </h2>
-                <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
-                  Elsewhere uses your selections to rank discoveries and challenges. No black-box algorithms or engagement traps—just topics you care about.
+                <p className="text-xs sm:text-sm text-[#5B6057] leading-relaxed">
+                  Elsewhere uses your chosen topics to organize readings and puzzles—no engagement traps, just fields you enjoy.
                 </p>
               </div>
 
-              {/* Topic Chips */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-neutral-400">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-xs text-[#777B72]">
                   <span>Select 2 or more disciplines:</span>
-                  <span className="font-mono text-[#D2F827]">
+                  <span className="font-mono text-[#4D5A48] font-medium">
                     {selectedTopics.length} selected
                   </span>
                 </div>
@@ -129,28 +126,25 @@ export default function OnboardingModal() {
                     return (
                       <button
                         key={topic}
+                        type="button"
                         onClick={() => toggleTopic(topic)}
-                        className={`flex items-center justify-between p-3 rounded-xl border text-xs font-medium transition-all text-left min-h-[48px] ${
+                        className={`flex items-center justify-between p-3 rounded-xl border text-xs font-medium transition-colors text-left min-h-[48px] cursor-pointer ${
                           isSelected
-                            ? 'bg-[#D2F827]/15 border-[#D2F827]/50 text-white shadow-sm'
-                            : 'bg-white/[0.02] border-white/10 text-neutral-400 hover:border-white/20 hover:text-white'
+                            ? 'bg-[#71816B]/14 border-[#71816B] text-[#292D29]'
+                            : 'bg-[#F6F5F0] border-[#E2E0D8] text-[#5B6057] hover:border-[#71816B]'
                         }`}
                       >
                         <span className="truncate pr-1">{topic}</span>
-                        {isSelected && (
-                          <Check className="h-3.5 w-3.5 text-[#D2F827] shrink-0" />
-                        )}
+                        {isSelected && <Check className="h-3.5 w-3.5 text-[#71816B] shrink-0" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 flex items-start gap-2.5 text-xs text-neutral-400 font-light">
-                <ShieldCheck className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>
-                  You can change or add interests at any time in your Profile settings.
-                </span>
+              <div className="p-3.5 rounded-xl bg-[#ECEBE4]/65 border border-[#E2E0D8] flex items-start gap-2.5 text-xs text-[#5B6057]">
+                <ShieldCheck className="h-4 w-4 text-[#71816B] shrink-0 mt-0.5" />
+                <span>You can adjust these anytime in your Profile notebook.</span>
               </div>
             </div>
           ) : (
@@ -158,39 +152,37 @@ export default function OnboardingModal() {
               <div className="space-y-1.5">
                 <h2
                   id="onboarding-modal-title"
-                  className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight"
+                  className="font-editorial text-2xl sm:text-3xl font-medium tracking-tight text-[#292D29] leading-snug"
                 >
-                  Set your intentional boundaries
+                  Set gentle boundaries
                 </h2>
-                <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
-                  Unlike social apps that profit by maximizing your screen time, Elsewhere helps you finish your curiosity session and step away feeling fulfilled.
+                <p className="text-xs sm:text-sm text-[#5B6057] leading-relaxed">
+                  Choose when Elsewhere should invite you to pause, reflect, and return to your day.
                 </p>
               </div>
 
-              {/* Session Duration */}
-              <div className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-2.5">
+              <div className="p-4 rounded-xl bg-[#F6F5F0] border border-[#E2E0D8] space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-[#D2F827]" />
-                    Target Session Duration
+                  <span className="text-xs font-semibold text-[#292D29] flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-[#71816B]" />
+                    Session Duration
                   </span>
-                  <span className="text-xs text-neutral-400">
-                    Natural stopping point
-                  </span>
+                  <span className="text-xs text-[#777B72]">Natural pause point</span>
                 </div>
-                <p className="text-xs text-neutral-400 font-light">
-                  How long would you like each visit to be before a gentle reflection prompt appears?
+                <p className="text-xs text-[#5B6057]">
+                  How long should each visit last before a calm pause prompt appears?
                 </p>
 
                 <div className="grid grid-cols-5 gap-2 pt-1">
                   {durations.map((d) => (
                     <button
                       key={d}
+                      type="button"
                       onClick={() => setTargetSessionDuration(d)}
-                      className={`py-2 rounded-xl text-xs font-semibold border transition-all ${
+                      className={`py-2 rounded-xl text-xs font-medium border transition-colors cursor-pointer ${
                         targetSessionDuration === d
-                          ? 'bg-[#D2F827] text-black border-[#D2F827]'
-                          : 'bg-white/[0.03] text-neutral-300 border-white/10 hover:border-white/20'
+                          ? 'bg-[#71816B] text-[#FAF9F5] border-[#71816B]'
+                          : 'bg-[#FAF9F5] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B]'
                       }`}
                     >
                       {d}m
@@ -199,30 +191,28 @@ export default function OnboardingModal() {
                 </div>
               </div>
 
-              {/* Optional Daily Usage Goal */}
-              <div className="p-4 rounded-xl bg-[#121620] border border-white/10 space-y-2.5">
+              <div className="p-4 rounded-xl bg-[#F6F5F0] border border-[#E2E0D8] space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-purple-400" />
+                  <span className="text-xs font-semibold text-[#292D29] flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5 text-[#8C7A56]" />
                     Optional Daily Intention
                   </span>
-                  <span className="text-xs text-neutral-400 font-light">
-                    Zero shame • No guilt
-                  </span>
+                  <span className="text-xs text-[#777B72]">Zero guilt</span>
                 </div>
-                <p className="text-xs text-neutral-400 font-light">
-                  Total mindful exploration across all sessions today:
+                <p className="text-xs text-[#5B6057]">
+                  Gentle daily ceiling across all visits:
                 </p>
 
                 <div className="grid grid-cols-4 gap-2 pt-1">
                   {dailyGoals.map((g) => (
                     <button
                       key={g}
+                      type="button"
                       onClick={() => setDailyGoal(g)}
-                      className={`py-2 rounded-xl text-xs font-semibold border transition-all ${
+                      className={`py-2 rounded-xl text-xs font-medium border transition-colors cursor-pointer ${
                         dailyGoal === g
-                          ? 'bg-purple-500 text-white border-purple-500'
-                          : 'bg-white/[0.03] text-neutral-300 border-white/10 hover:border-white/20'
+                          ? 'bg-[#292D29] text-[#FAF9F5] border-[#292D29]'
+                          : 'bg-[#FAF9F5] text-[#5B6057] border-[#E2E0D8] hover:border-[#71816B]'
                       }`}
                     >
                       {g} min
@@ -234,19 +224,21 @@ export default function OnboardingModal() {
           )}
         </div>
 
-        {/* Footer Actions */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-white/[0.08] bg-[#0D1017]">
+        {/* Footer */}
+        <div className="flex items-center justify-between px-6 py-4 border-t border-[#E2E0D8] bg-[#F6F5F0]">
           {step === 2 ? (
             <button
+              type="button"
               onClick={() => setStep(1)}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-neutral-400 hover:text-white transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-medium text-[#5B6057] hover:text-[#292D29] transition-colors cursor-pointer"
             >
               Back
             </button>
           ) : (
             <button
+              type="button"
               onClick={closeOnboardingModal}
-              className="px-4 py-2 rounded-xl text-xs font-medium text-neutral-500 hover:text-neutral-300 transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-medium text-[#777B72] hover:text-[#292D29] transition-colors cursor-pointer"
             >
               Skip for now
             </button>
@@ -254,20 +246,22 @@ export default function OnboardingModal() {
 
           {step === 1 ? (
             <button
+              type="button"
               onClick={() => setStep(2)}
               disabled={selectedTopics.length === 0}
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#D2F827] text-black hover:bg-[#BDF010] transition-colors disabled:opacity-40"
+              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors disabled:opacity-40 cursor-pointer"
             >
               <span>Next: Set Limits</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           ) : (
             <button
+              type="button"
               onClick={handleFinish}
-              className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-bold bg-[#D2F827] text-black hover:bg-[#BDF010] transition-colors shadow-lg shadow-[#D2F827]/10"
+              className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-xs font-medium bg-[#71816B] text-[#FAF9F5] hover:bg-[#5E6D59] transition-colors cursor-pointer"
             >
-              <span>Begin Mindful Exploration</span>
-              <Check className="h-4 w-4 stroke-[3]" />
+              <span>Begin Exploring</span>
+              <Check className="h-4 w-4" />
             </button>
           )}
         </div>
